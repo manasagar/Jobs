@@ -1,9 +1,7 @@
-package com.Job.restservices.Config;
+package com.Job.restservices.config;
 
-import com.Job.restservices.Service.JwtService;
-import com.Job.restservices.Service.UserInfoService;
-import com.Job.restservices.entity.User;
-import com.Job.restservices.entity.UserInfo;
+import com.Job.restservices.service.JwtService;
+import com.Job.restservices.service.UserInfoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

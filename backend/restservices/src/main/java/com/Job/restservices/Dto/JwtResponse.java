@@ -1,6 +1,5 @@
-package com.Job.restservices.Dto;
+package com.Job.restservices.dto;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

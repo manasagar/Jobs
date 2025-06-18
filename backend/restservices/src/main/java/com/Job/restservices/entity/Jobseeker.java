@@ -12,11 +12,6 @@ public class Jobseeker extends User{
     @Column(name="resume")
     String resume;
 
-    @ManyToMany
-    @JoinTable(
-            name = "job_applications",
-            joinColumns = @JoinColumn(name = "jobseeker_id"),
-            inverseJoinColumns = @JoinColumn(name = "job_id")
-    )
-    private List<JobDetails> appliedJobs;
+    @OneToMany(mappedBy = "jobseeker")
+    private List<JobApplications> appliedJobs;
 }

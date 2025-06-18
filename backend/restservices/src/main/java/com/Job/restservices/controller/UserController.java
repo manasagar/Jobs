@@ -1,10 +1,9 @@
 package com.Job.restservices.controller;
 
-import com.Job.restservices.Dto.JwtResponse;
-import com.Job.restservices.Service.JwtService;
-import com.Job.restservices.Service.UserService;
+import com.Job.restservices.dto.JwtResponse;
+import com.Job.restservices.service.JwtService;
+import com.Job.restservices.service.UserService;
 import com.Job.restservices.entity.User;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

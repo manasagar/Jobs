@@ -1,10 +1,10 @@
-package com.Job.restservices.Dto;
+package com.Job.restservices.dto;
 
 import lombok.Data;
 
 @Data
 public class JobFilter {
     String companyName;
-    String stipend;
+    int stipend;
 
 }

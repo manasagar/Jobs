@@ -20,10 +20,12 @@ public class JobDetails {
     @ManyToOne
     @JoinColumn(name = "recruiter_id", nullable = false)
     private Recruiter recruiter;
-    @ManyToMany(mappedBy = "appliedJobs")
-    private List<Jobseeker> jobseekers;
+    @OneToMany (mappedBy = "job")
+    private List<JobApplications> applications;
     @Column(name="status")
     private String status;
+    @Column(name="stipend")
+    private int stipend;
 
 
 }

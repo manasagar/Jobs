@@ -1,6 +1,6 @@
-package com.Job.restservices.Service;
+package com.Job.restservices.service;
 
-import com.Job.restservices.Repository.UserRepository;
+import com.Job.restservices.repository.UserRepository;
 import com.Job.restservices.entity.User;
 import com.Job.restservices.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;

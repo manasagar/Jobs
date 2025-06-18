@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "Recruiter")
 public class Recruiter extends User {
     @Column(name="company_name",nullable = false)
-    String CompanyName;
+    String companyName;
     @OneToMany(mappedBy="id")
     List<JobDetails> jobs;
 
