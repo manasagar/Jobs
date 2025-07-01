@@ -20,5 +20,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
+    public User get(String userId) {
+        return userRepository.findByEmail(userId).get();
+    }
 
 }
