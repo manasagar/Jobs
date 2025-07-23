@@ -17,9 +17,7 @@ public class Jobseeker extends User{
     @Column(length = 5242880) // optional: limit to 5MB
     private byte[] resume;
 
-    @OneToMany(mappedBy = "jobseeker")
-    @JsonManagedReference
-    private List<JobApplications> appliedJobs;
+
     public Jobseeker() {}
     public Jobseeker(User user){
         this.name=user.getName();

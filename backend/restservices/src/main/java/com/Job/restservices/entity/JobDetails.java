@@ -33,13 +33,11 @@ public class JobDetails {
     private String location;
     @ManyToOne
     @JoinColumn(name = "recruiter_id", nullable = false)
-    @JsonManagedReference
+    @JsonBackReference("recruiter-jobs")
     private Recruiter recruiter;
-    @OneToMany (mappedBy = "job")
-   @JsonBackReference
-    private List<JobApplications> applications;
     @Column(name="status")
     private String status;
     @Column(name="stipend")
     private int stipend;
+
 }

@@ -29,18 +29,11 @@ import {
   TrendingUp,
   Clock,
   CheckCircle,
-  Eye,
-  Edit,
-  Plus,
-  Download,
-  Mail,
-  Phone,
-  Calendar,
-  MapPin,
-  DollarSign,
+  DollarSign
 } from "lucide-react"
 import JobDetails from "./jobDetails"
 import JobApplications from "./jobApplications"
+
 // Sample data
 const applicationTrends = [
   { month: "Jan", applications: 45, hires: 8 },
@@ -111,19 +104,10 @@ const activeJobs = [
   },
 ]
 
-
 export default function Component() {
-  const [selectedTimeRange, setSelectedTimeRange] = useState("6months")
-
-  
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      Active: "bg-green-100 text-green-800",
-      Draft: "bg-yellow-100 text-yellow-800",
-      Closed: "bg-red-100 text-red-800",
-    }
-    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"
+  const [application,setApplication]=useState(-1);
+  function changeApplication(id:any){
+  setApplication(id);
   }
 
   return (
@@ -136,21 +120,12 @@ export default function Component() {
               <Briefcase className="h-8 w-8 text-blue-600" />
               <span className="ml-2 text-xl font-bold text-gray-900">RecruiterHub</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Export Data
-              </Button>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Post New Job
-              </Button>
-            </div>
+            
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -206,326 +181,16 @@ export default function Component() {
             </CardContent>
           </Card>
         </div>
-
-        <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="jobs">Job Management</TabsTrigger>
-            <TabsTrigger value="candidates">Candidates</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Application Trends */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Application Trends</CardTitle>
-                  <CardDescription>Applications and hires over the last 6 months</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      applications: {
-                        label: "Applications",
-                        color: "hsl(var(--chart-1))",
-                      },
-                      hires: {
-                        label: "Hires",
-                        color: "hsl(var(--chart-2))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={applicationTrends}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey="applications"
-                          stroke="var(--color-applications)"
-                          strokeWidth={2}
-                          name="Applications"
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="hires"
-                          stroke="var(--color-hires)"
-                          strokeWidth={2}
-                          name="Hires"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-
-              {/* Hiring Funnel */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Hiring Funnel</CardTitle>
-                  <CardDescription>Current candidates by stage</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      count: {
-                        label: "Candidates",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={hiringFunnel} layout="horizontal">
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="stage" type="category" width={80} />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="count" fill="var(--color-count)">
-                          {hiringFunnel.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-
-              {/* Application Sources */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Application Sources</CardTitle>
-                  <CardDescription>Where candidates are coming from</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      value: {
-                        label: "Applications",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={applicationSources}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          dataKey="value"
-                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        >
-                          {applicationSources.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-
-              {/* Job Performance */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Job Performance</CardTitle>
-                  <CardDescription>Application conversion rates by position</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      conversion: {
-                        label: "Conversion Rate (%)",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={jobPerformance}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="job" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="conversion" fill="var(--color-conversion)" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
+        {application==-1?<JobDetails changeApplication={changeApplication}/>:<JobApplications changeApplication={changeApplication} application={application}/>}
+        {/* <Tabs defaultValue="dashboard" className="w-full">
+          
+        
           <TabsContent value="jobs" className="space-y-6">
-            <JobDetails activeJobs={activeJobs}/>
+            <JobDetails />
           </TabsContent>
 
-          <TabsContent value="candidates" className="space-y-6">
-            <JobApplications/>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Analytics & Reports</h2>
-              <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
-                <SelectTrigger className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1month">Last Month</SelectItem>
-                  <SelectItem value="3months">Last 3 Months</SelectItem>
-                  <SelectItem value="6months">Last 6 Months</SelectItem>
-                  <SelectItem value="1year">Last Year</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <TrendingUp className="h-5 w-5 mr-2" />
-                    Conversion Rate
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-green-600">18.2%</div>
-                  <p className="text-sm text-gray-600">+2.4% from last month</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Clock className="h-5 w-5 mr-2" />
-                    Time to Fill
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-blue-600">18 days</div>
-                  <p className="text-sm text-gray-600">-3 days from last month</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <DollarSign className="h-5 w-5 mr-2" />
-                    Cost per Hire
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-purple-600">$3,240</div>
-                  <p className="text-sm text-gray-600">-$180 from last month</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Monthly Hiring Trends</CardTitle>
-                  <CardDescription>Applications vs successful hires</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      applications: {
-                        label: "Applications",
-                        color: "hsl(var(--chart-1))",
-                      },
-                      hires: {
-                        label: "Hires",
-                        color: "hsl(var(--chart-2))",
-                      },
-                    }}
-                    className="h-[400px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={applicationTrends}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey="applications"
-                          stroke="var(--color-applications)"
-                          strokeWidth={3}
-                          name="Applications"
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="hires"
-                          stroke="var(--color-hires)"
-                          strokeWidth={3}
-                          name="Hires"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Department Performance</CardTitle>
-                  <CardDescription>Hiring success by department</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Engineering</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: "85%" }}></div>
-                        </div>
-                        <span className="text-sm text-gray-600">85%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Product</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-green-600 h-2 rounded-full" style={{ width: "72%" }}></div>
-                        </div>
-                        <span className="text-sm text-gray-600">72%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Design</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-purple-600 h-2 rounded-full" style={{ width: "68%" }}></div>
-                        </div>
-                        <span className="text-sm text-gray-600">68%</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Marketing</span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div className="bg-orange-600 h-2 rounded-full" style={{ width: "61%" }}></div>
-                        </div>
-                        <span className="text-sm text-gray-600">61%</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+          
+        </Tabs> */}
       </div>
     </div>
   )

@@ -1,21 +1,18 @@
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import {  Upload } from "lucide-react"
 import {RegisterPayload,registerUser,loginWelcome,uploadResume} from "@/data/urlJobseeker"
 import { useState,useRef } from "react"
 import { useRouter } from "next/navigation"
 import {Button} from "@/components/ui/button"
+import { DataLoader } from "@/data/common"
 export default function Candidate(){
+   const [isDataLoading, setIsDataLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword,setconfirmPassword]=useState("");
-  const [phoneNo,setPhoneNo]=useState("");
-  const [experience,setExperiance]=useState<string | undefined>(undefined);
-  const [skills,setSkills]=useState<Array<string>|undefined>([]);
+  const [confirmPassword,setconfirmPassword]=useState(""); 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const router=useRouter()
@@ -29,6 +26,7 @@ const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     inputRef.current?.click();
   };
 const RegisterCandidate= async ()=>{
+ 
 
   const request:RegisterPayload={
     name:name,
@@ -36,11 +34,18 @@ const RegisterCandidate= async ()=>{
     password:password,
     role:"CANDIDATE"
   }
-  console.log("what1")
+  
   try{
   if(resumeFile){
+    setIsDataLoading(true);
+    try{
   await registerUser(request,resumeFile)
-  
+    }
+    catch(error){
+      console.log(error);
+    }
+    setIsDataLoading(false);
+    router.push("/Jobsearch");
   }
   else{
     // notify
@@ -50,10 +55,11 @@ catch(e){
     console.log(e)
 }
   
-  router.push("/Jobsearch");
+ 
 }
     return (
          <>
+         { isDataLoading?<DataLoader/>:<br/>}
           <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input id="email" type="email" placeholder="Enter your email"
@@ -85,37 +91,9 @@ catch(e){
               </div>
               
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input id="phone" type="tel" placeholder="+1 (555) 123-4567"
-               value={phoneNo}
-                onChange={(e) => setPhoneNo(e.target.value)}
-               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="experience">Experience Level</Label>
-              <Select value={experience} onValueChange={setExperiance} >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select experience level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="entry">Entry Level (0-2 years)</SelectItem>
-                  <SelectItem value="mid">Mid Level (3-5 years)</SelectItem>
-                  <SelectItem value="senior">Senior Level (6-10 years)</SelectItem>
-                  <SelectItem value="lead">Lead/Principal (10+ years)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skills">Key Skills</Label>
-              <Textarea
-                id="skills"
-                placeholder="e.g., JavaScript, React, Node.js, Python..."
-                className="min-h-[80px]"
-                value={skills}
-               
-              />
-            </div>
+            
+          
+          
             <div className="space-y-2">
               <Label htmlFor="resume">Resume</Label>
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors" onClick={handleUploadClick}>

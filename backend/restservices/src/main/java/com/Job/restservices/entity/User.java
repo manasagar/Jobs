@@ -1,6 +1,8 @@
 package com.Job.restservices.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +25,7 @@ public  class User {
     @Column(name="name",nullable = false)
     protected String name;
     @Column(name="password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     protected String password;
     @Enumerated(EnumType.STRING)
     @Column(name="role",nullable = false)

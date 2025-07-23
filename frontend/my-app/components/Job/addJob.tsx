@@ -70,7 +70,7 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
          
           
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="md:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>New Job</DialogTitle>
           </DialogHeader>

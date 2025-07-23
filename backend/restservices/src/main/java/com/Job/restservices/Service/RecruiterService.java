@@ -13,6 +13,8 @@ import com.Job.restservices.repository.JobDetailsRepository;
 import com.Job.restservices.repository.RecruiterRepository;
 import com.Job.restservices.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,18 +48,15 @@ public class RecruiterService {
         public List<JobDetails> getJobs(String recruiterId){
            return recruiterRepository.findById(recruiterId).get().getJobs();
         }
-        public List<JobDetails>getJobs(JobFilter jobFilter,String recruiterId){
-                List<JobDetails> jobs=recruiterRepository.findById(recruiterId).get().getJobs();
-                jobs=jobs.stream().filter(job->{
-                    if(job.getStipend()>=jobFilter.getStipend())
-                        return true;
-                    return false;
-                }).collect(Collectors.toList());
-            return jobs;
+        public Page<JobDetails>getJobs(String recruiterId,Pageable pageable){
+            return jobDetailsRepository.findByRecruiter(recruiterId,pageable);
         }
       //  @Notify(mandatory = true,notificationTypes = {NotificationTypes.EMAIL})
         public JobApplications changeJobStatus(String recruiterId, JobApplications jobApplications){
            return jobApplicationsRepository.save(jobApplications);
+        }
+        public Page<JobApplications> getApplications(int jobId, Pageable pageable){
+            return jobApplicationsRepository.findByJob(jobId,pageable);
         }
 //        public
 }

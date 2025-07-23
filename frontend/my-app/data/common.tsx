@@ -1,3 +1,5 @@
+import { Loader } from "@/components/loader/loader"
+
 export interface JwtResponse {
   jwtToken: string;
   expiryDate: Date;
@@ -18,7 +20,8 @@ export const loginUser = async (payload: LoginPayload) => {
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) throw new Error('Login failed');
+  if (!res.ok) {console.log(res)
+    throw new Error('Login failed');}
   const data= await res.json();
   const jwtResponse:JwtResponse=data as JwtResponse
    await SaveJwt(jwtResponse);
@@ -65,4 +68,12 @@ export interface PaginatedResponse<T> {
   size: number;
   first: boolean;
   last: boolean;
+}
+export function DataLoader(){
+  return(<>
+    <div className="flex items-center space-x-3">
+              <Loader variant="spinner" size="lg" />
+              <span>Loading...</span>
+            </div>
+  </>)
 }

@@ -7,8 +7,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Briefcase } from "lucide-react"
 import { useState } from "react"
 import { loginUser,LoginPayload } from "@/data/common"
-
+import { useRouter } from "next/navigation"
+import { DataLoader } from "@/data/common"
+import { checkRole } from "@/data/common"
 export default   function  LoginPage()  {
+  const router=useRouter();
+    const [isDataLoading, setIsDataLoading] = useState(false);
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
 
@@ -17,9 +21,24 @@ export default   function  LoginPage()  {
       email:email,
       password:password
     }
+    console.log("hello");
+     try{
+    setIsDataLoading(true);
     await loginUser(request);
+    setIsDataLoading(false);
+     }
+     catch(error){
+      console.log(error);
+     }
+    console.log("manas"+checkRole());
+    if(checkRole()=='CANDIDATE')
+      router.push('/Jobsearch');
+    else
+      router.push('/Jobmanagement');
   }
   return (
+    <>
+        {isDataLoading?<DataLoader/>:<br/>}
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
@@ -59,5 +78,6 @@ export default   function  LoginPage()  {
         </CardFooter>
       </Card>
     </div>
+    </>
   )
 }

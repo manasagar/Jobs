@@ -9,13 +9,14 @@ import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Plus, X } from "lucide-react"
 import { registerUser,RegisterPayload} from "@/data/urlRecruiter"
+import { DataLoader } from "@/data/common"
 export default function Recruiter(){
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword,setconfirmPassword]=useState("");
     const [company,setCompany]=useState("");
-    const [experience,setExperiance]=useState("");
     const [skills,setSkills]=useState<string[]>([]);
     const [currentPosition, setCurrentPosition] = useState("");
     const [skill,setSkill]=useState("");
@@ -32,20 +33,28 @@ export default function Recruiter(){
   }
     const registerRecruiter=async ()=>{
       const request:RegisterPayload={
-        linkdein:linkdeinProflie,
+        linkedein:linkdeinProflie,
         name:name,
         email:email,
         password:password,
         role:"RECRUITER",
         currentPosition:currentPosition,
-        yearsOfExperience:experience,
-        specialisationAreas:skills,
+        skills:skills,
         companyName:company
       }
+      setIsDataLoading(true);
+      try{
       await registerUser(request);
+      }
+      catch(error){
+        console.log(error);
+      }
+      setIsDataLoading(false);
+      router.push("/Jobmanagement");
     }
    
     return (<>
+    {isDataLoading?<DataLoader/>:<br/>}
      <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input id="email" type="email" placeholder="Enter your email" required value={email} onChange={(e)=>{setEmail(e.target.value)}} />
@@ -71,20 +80,6 @@ export default function Recruiter(){
             <div className="space-y-2">
               <Label htmlFor="position">Current Position</Label>
               <Input id="position" placeholder="Senior Software Engineer" required value={currentPosition} onChange={(e)=>{setCurrentPosition(e.target.value)}}/>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="experience">Years of Experience</Label>
-              <Select value={experience} onValueChange={setExperiance}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select experience range"  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3-5">3-5 years</SelectItem>
-                  <SelectItem value="6-10">6-10 years</SelectItem>
-                  <SelectItem value="11-15">11-15 years</SelectItem>
-                  <SelectItem value="15+">15+ years</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             
             <div className="grid gap-3">

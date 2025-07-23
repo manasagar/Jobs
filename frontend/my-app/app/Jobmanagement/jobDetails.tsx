@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
+import {MeetingDialog} from "@/components/Job/job-meeting-dialog"
 import {
  
   Eye,
@@ -15,8 +15,9 @@ import {
 } from "lucide-react"
 import { AddJob } from "@/components/Job/addJob"
 import { jobList } from "@/data/urlRecruiter"
-import { JobPayload } from "@/data/common"
-export default function JobDetails(props:any){
+export default function JobDetails({ changeApplication }: { changeApplication : (id:any) => void }){
+  const[showJobMeetingDialog,setShowJobMeetingDialog]=useState(false);
+  const[selectedJobForMeeting,setSelectedJobForMeeting]=useState(-1);
   const [refresh,setRefresh]=useState(0);
   const [jobs,setJobs]=useState<any[] >([]);
   const onSubmit=()=>{
@@ -33,16 +34,22 @@ export default function JobDetails(props:any){
     return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800"
   }
   const getJobs=async ()=>{
+    try{
     const res=await jobList();
-
-    await setJobs(res);
-
-    return res;
+     setJobs(res.content);
+     console.log(res.content);
+     return res;
+    }
+    catch(error){
+      console.log(error);
+    }
+    
   }  
 useEffect(()=>{
   getJobs()
 },[refresh])
 return(<>
+
 <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Job Management</h2>
               <div className="flex items-center space-x-4">
@@ -71,14 +78,16 @@ return(<>
                       <TableHead>Job Title</TableHead>
                       <TableHead>Department</TableHead>
                       <TableHead>Location</TableHead>
-                      <TableHead>Applications</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Deadline</TableHead>
+                      <TableHead>Stipend</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {jobs.map((job:any) => (
+                    {
+                      
+                    jobs.map((job:any) => (
                       <TableRow key={job.id}>
                         <TableCell>
                           <div>
@@ -88,29 +97,41 @@ return(<>
                         </TableCell>
                         <TableCell>{job.jobDescription}</TableCell>
                         <TableCell>{job.location}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{job.applications} applications</Badge>
-                        </TableCell>
+                       
                         <TableCell>
                           <Badge className={getStatusColor(job.status)}>{job.status}</Badge>
                         </TableCell>
                         <TableCell>{new Date(job.deadline).toLocaleDateString()}</TableCell>
                         <TableCell>
+                          {"$"+job.stipend}
+                        </TableCell>
+                        <TableCell>
                           <div className="flex items-center space-x-2">
-                            <Button variant="outline" size="sm">
+                            <Button  variant="outline" size="sm" onClick={() => changeApplication(job.id)}>
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={()=> {setShowJobMeetingDialog(true)
+                              setSelectedJobForMeeting(job.id);
+                            }
+
+                            }>
                               <Edit className="h-4 w-4" />
                             </Button>
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                    }
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
+          <MeetingDialog
+        open={showJobMeetingDialog}
+        onOpenChange={setShowJobMeetingDialog}
+        application={selectedJobForMeeting}
+     
+      />
             </>
                 )
 }

@@ -12,8 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface JobApplicationsRepository extends JpaRepository<JobApplications,Integer> {
-    Optional<JobApplications> findByJob(JobDetails jobDetails);
 
+    @Query(nativeQuery = true,value="select * from job_applications where job_id=?1 ")
+    public Page<JobApplications> findByJob(int job,Pageable pageable);
     @Query(nativeQuery = true,value="select * from job_applications where jobseeker_id=?1 and job_id=?2 ")
     public Optional<JobApplications> findByJobAndJobseeker(String  jobseekerId,int jobDetailsId);
     @Query(nativeQuery = true,value="select * from job_applications where jobseeker_id=?1  and is_saved = true")

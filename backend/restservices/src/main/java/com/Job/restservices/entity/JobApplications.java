@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,17 +20,17 @@ public class JobApplications {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "job_id", nullable = false)
-    @JsonManagedReference
     private JobDetails job;
-
     @ManyToOne
     @JoinColumn(name = "jobseeker_id", nullable = false)
-    @JsonBackReference
     private Jobseeker jobseeker;
-
     @Column(name = "application_status")
     private String applicationStatus; // e.g., Applied, Interview, Selected, Rejected
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_meet_id", referencedColumnName = "id")
+    private Meeting scheduleMeet;
+    @Column(name="meet")
+    private boolean meet;
     @Column(name ="is_saved")
     private boolean saved;
     @Column(name = "applied_on")

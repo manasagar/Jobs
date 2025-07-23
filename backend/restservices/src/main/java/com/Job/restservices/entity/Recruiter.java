@@ -16,7 +16,7 @@ import java.util.List;
 public class Recruiter extends User {
     @Column(name="company_name",nullable = false)
     String companyName;
-    @JsonBackReference
+    @JsonBackReference("recruiter-jobs")
     @OneToMany(mappedBy="recruiter", cascade = CascadeType.ALL)
     List<JobDetails> jobs;
     @Column(name="current_position")
@@ -25,4 +25,8 @@ public class Recruiter extends User {
     List<String> skills;
     @Column(name="linkedein_profile")
     String linkedein;
+    @OneToMany(mappedBy = "recruiter",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("recruiter-meeting")
+    List<Meeting> meetings;
+
 }

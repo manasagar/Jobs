@@ -12,9 +12,8 @@ export interface RegisterPayload {
   password: string;
   role:string;
   currentPosition:string;
-  yearsOfExperience:string;
-  specialisationAreas:Array<string>;
-  linkdein:string;
+  skills:Array<string>;
+  linkedein:string;
   companyName:string;
 }
 
@@ -52,7 +51,7 @@ export const registerUser = async (payload: RegisterPayload) => {
     body: JSON.stringify(payload),
   });
   
-  if (!res.ok) throw new Error('Registration failed');
+ 
   if (!res.ok) throw new Error('Registration failed');
       const data= await res.json();
       const jwtResponse:JwtResponse=data as JwtResponse
@@ -61,4 +60,11 @@ export const registerUser = async (payload: RegisterPayload) => {
   return res.json();
 };
 
-
+export const getApplicationByJob=async(jobId:number,page:number)=>{
+  const res=await fetch(`${BASE_URL}/recruiter/get_applications/${jobId}?page=${page}`,{
+    method:'GET',
+     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+  });
+  if(!res.ok) throw new Error('Creation Failed');
+  return res.json();
+}

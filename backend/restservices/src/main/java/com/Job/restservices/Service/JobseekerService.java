@@ -93,7 +93,7 @@ public class JobseekerService {
         return jobApplicationsRepository.findByJobAndJobseekerAndApplied(jobseekerId,pageable);
     }
     public Page<JobDetails> getJobs(String company,String location,Pageable pageable){
-        return jobDetailsRepository.findFilteredJobs(company,location,pageable);
+        return jobDetailsRepository.findFilteredJobs(location,pageable);
     }
     public void updateResume(String jobseekerName,byte[] resume) throws  Exception{
         Jobseeker jobseeker=jobseekerRepository.findById(jobseekerName).get();
