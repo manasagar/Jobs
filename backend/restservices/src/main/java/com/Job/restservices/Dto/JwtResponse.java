@@ -12,4 +12,5 @@ import java.util.Date;
 public class JwtResponse {
     String jwtToken;
     Date expiryDate;
+    String role;
 }

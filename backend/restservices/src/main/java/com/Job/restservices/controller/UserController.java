@@ -13,10 +13,12 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @RestController
 @RequestMapping(value="/user")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class UserController {
     @Autowired
     UserService userService;
@@ -25,6 +27,7 @@ public class UserController {
     @Autowired
     JwtService jwtService;
     @GetMapping("/welcome")
+
     public String welcome() {
         return "Welcome this endpoint is not secure";
     }
@@ -32,13 +35,14 @@ public class UserController {
     public ResponseEntity<?> Register(@RequestBody User user) throws Exception{
              userService.register(user);
              String token=jwtService.generateToken(user.getEmail());
-             return ResponseEntity.ok(new JwtResponse(token,jwtService.extractExpiration(token)));
+             return ResponseEntity.ok(new JwtResponse(token,jwtService.extractExpiration(token),user.getRole().toString()));
     }
     @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> Login(@RequestBody User user) throws Exception {
         authenticate(user.getEmail(),user.getPassword());
         String token=jwtService.generateToken(user.getEmail());
-        return  ResponseEntity.ok(new JwtResponse(token,jwtService.extractExpiration(token)));
+        user=userService.get(user.getEmail());
+        return  ResponseEntity.ok(new JwtResponse(token,jwtService.extractExpiration(token),user.getRole().toString()));
     }
     private void authenticate(String username, String password) throws Exception {
         Objects.requireNonNull(username);
