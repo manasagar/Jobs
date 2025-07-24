@@ -63,7 +63,33 @@ export const loginWelcome = async () => {
   if (!res.ok) throw new Error('Login failed');
   return res.json();
 };
+  export const getSelf= async()=>{
+    const res= await fetch(`${BASE_URL}/jobseeker/self`,{
+      method:"GET",
+      headers:{'Authorization': `Bearer ${extractToken()}`}
+    })
+    if (!res.ok) throw new Error('no self');
+    return res.json();
+  }
+  export const getMeetingByJobseeker = async(page:number)=>{
+    const res = await fetch(`${BASE_URL}/jobseeker/meeting?page=${page}`, {
+      method:'GET',
+      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
 
+    })
+    if (!res.ok) throw new Error('Meeting Failed');
+  return res.json();
+  }
+  export const finaliseMeeting=async(meeting:any)=>{
+   const res = await fetch(`${BASE_URL}/meeting/finalise`, {
+    method: 'POST',
+      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+    body: JSON.stringify(meeting),
+  });
+   if (!res.ok) throw new Error('Meeting Failed');
+  return res.json();
+
+}
   export const registerUser = async (payload: RegisterPayload,resume :File) => {
     
     const res = await fetch(`${BASE_URL}/jobseeker/register`, {

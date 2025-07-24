@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { Application, Meeting } from "@/components/type/job"
 import { SimpleTimeInput } from "@/components/Job/simple-time-input"
-
+import { addMeeting } from "@/data/urlRecruiter"
 interface MeetingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -33,19 +33,22 @@ export function MeetingDialog({ open, onOpenChange, application }: MeetingDialog
     time: "",
     
   })
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const Schedule= async(meeting:Meeting)=>{
+    await addMeeting(meeting);
+  }
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
     if (!application) return
     console.log("date ",formData.date," time ",formData.time);
     const meeting: Omit<Meeting, "id"> = {
      
-      interviewerName:null,
-      datetime: formData.date+"T"+formData.time+":00.000",
-      applicationId:application,
-      candidateName:null
+      recruiter:null,
+      time: formData.date+"T"+formData.time+":00.000",
+      job:application,
+      candidate:null
       
     }
+   await  Schedule(meeting)
 
    
     onOpenChange(false)

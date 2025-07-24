@@ -28,6 +28,18 @@ import java.util.List;
 public class JobseekerController {
     @Autowired
     JobseekerService jobseekerService;
+    @GetMapping(path="/self",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> self(Principal principal){
+        return ResponseEntity.ok(jobseekerService.getSelf(principal));
+    }
+    @GetMapping(path="/meeting",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> meetings(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "3") int size,
+                                      @RequestParam(defaultValue = "id") String sortBy,
+                                        Principal principal){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        return ResponseEntity.ok(jobseekerService.getMeeting(principal.getName(), pageable));
+    }
     @PostMapping(path = "/register",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> register(@RequestBody User user) throws Exception
     {

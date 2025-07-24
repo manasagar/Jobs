@@ -26,6 +26,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class MeetingService {
         mailSender.send(message);
         helper.setTo(mail2);
         mailSender.send(message);
-        return message.toString();
+        return summary;
     }
     private String generateIcs(String summary, String description, String startTime, String endTime, String location){
         return(
@@ -140,54 +141,40 @@ public class MeetingService {
     public Page<Meeting> getMeetingByJob(int jobId,Pageable pageable){
         return meetingRepository.findByJob(jobId,pageable);
     }
-    public String finalise(Meeting meeting) throws Exception {
+    public String finalise(Meeting meeting,String candidate) throws Exception {
+        meeting.setCandidate(candidate);
         JobDetails jobDetails=jobDetailsRepository.findById(meeting.getJob()).get();
         meeting.setRecruiter(jobDetails.getRecruiter());
         Recruiter recruiter=meeting.getRecruiter();
-        AtomicBoolean flag= new AtomicBoolean(true);
-        recruiter.getMeetings().forEach(meet->{
-            if(meet.getTime()!=null&&meet.getTime().isEqual(meeting.getTime())){
-                if(meet.isApplied()){
-                    flag.set(false);
-                }
-                else{
-                    meet.setApplied(true);
-                    meet.setCandidate(meeting.getCandidate());
-                    meeting.setApplied(true);
-                }
 
-            }
-        });
-        if(!flag.get())
+       Long flag= meetingRepository.findConflict(meeting.getTime(),recruiter.getEmail());
+        if(flag>0)
             return "slot filled";
         else{
             ZoneId istZone = ZoneId.of("Asia/Kolkata");
             ZonedDateTime zonedIST = meeting.getTime().atZone(istZone);
             ZonedDateTime zonedUTC = zonedIST.withZoneSameInstant(ZoneOffset.UTC);
             LocalDateTime utcDateTime = zonedUTC.toLocalDateTime();
-            scheduleMeet("create the meeting",utcDateTime.toString(),90,meeting.getCandidate(),meeting.getRecruiter().getEmail());
+            Meeting meeting1=meetingRepository.findMeeting(meeting.getTime(),recruiter.getEmail());
+            meeting1.setApplied(true);
+            String link=scheduleMeet("create the meeting",utcDateTime.toString(),90,meeting.getCandidate(),meeting.getRecruiter().getEmail());
+            meeting1.setCandidate(meeting.getCandidate());
+            meeting1.setZoomLink(link);
+            meetingRepository.save(meeting1);
 
-            recruiterRepository.save(recruiter);
             JobApplications jobApplications=jobApplicationsRepository.findByJobAndJobseeker(meeting.getCandidate(), meeting.getJob()).get();
             if(!jobApplications.isMeet())
                 throw new BadRequestException("invaid");
-            log.info("schedule {}",meeting);
-            jobApplications.setScheduleMeet(meeting);
+
+            jobApplications.setScheduleMeet(meeting1);
             jobApplicationsRepository.save(jobApplications);
             return "slot applied";
         }
     }
     public List<LocalDateTime> meetingTime(Integer jobId){
-        JobDetails jobDetails=jobDetailsRepository.findById(jobId).get();
-        Recruiter recruiter=jobDetails.getRecruiter();
-        List<LocalDateTime> availaibleslot=new ArrayList<>();
-        log.info("meeting {}",recruiter.getEmail());
-        recruiter.getMeetings().forEach(meeting -> {
-            log.info("applied {} job {}",meeting.isApplied(),meeting.getJob());
-            if(!meeting.isApplied()&&jobId==meeting.getJob())
-                availaibleslot.add(meeting.getTime());
-        });
-        return availaibleslot;
+        return meetingRepository.findAvailaible(jobId).stream()
+                .map(Timestamp::toLocalDateTime)
+                .toList();
     }
     public String selectCandidate(Meeting meeting,String interviewer) throws MessagingException {
 
@@ -213,15 +200,8 @@ public class MeetingService {
        meeting.setRecruiter(recruiter);
        if(meeting.getJob()==0)
            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "no Job");
-       recruiter.getMeetings().forEach(meet ->{
-           if(meet.getTime()==null||meet.getTime().isAfter(meeting.getTime().plusMinutes(90))||meet.getTime().plusMinutes(90).isBefore(meeting.getTime()))
-           {
-
-           }
-           else
-               throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlapping schedule");
-       } );
-
+       if(meetingRepository.findAllConflict(meeting.getTime(),meeting.getRecruiter().getEmail())>0)
+        throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlapping schedule");
        meetingRepository.save(meeting);
        return meeting;
     }

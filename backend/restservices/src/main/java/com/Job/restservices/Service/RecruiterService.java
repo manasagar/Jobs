@@ -2,10 +2,7 @@ package com.Job.restservices.service;
 
 import com.Job.restservices.dto.JobFilter;
 import com.Job.restservices.dto.JwtResponse;
-import com.Job.restservices.entity.JobApplications;
-import com.Job.restservices.entity.JobDetails;
-import com.Job.restservices.entity.Recruiter;
-import com.Job.restservices.entity.User;
+import com.Job.restservices.entity.*;
 import com.Job.restservices.notifications.NotificationTypes;
 import com.Job.restservices.notifications.annotations.Notify;
 import com.Job.restservices.repository.JobApplicationsRepository;
@@ -35,6 +32,9 @@ public class RecruiterService {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtService jwtService;
+    public Recruiter getSelf(Principal principal){
+        return recruiterRepository.findById(principal.getName()).get();
+    }
         public JwtResponse addRecruiter(Recruiter recruiter) throws Exception{
             recruiter.setPassword(passwordEncoder.encode(recruiter.getPassword()));
             recruiterRepository.save(recruiter);

@@ -68,3 +68,31 @@ export const getApplicationByJob=async(jobId:number,page:number)=>{
   if(!res.ok) throw new Error('Creation Failed');
   return res.json();
 }
+
+export const getMeetingByJob=async(jobId:number,page:number)=>{
+  const res=await fetch(`${BASE_URL}/recruiter/getMeeting/${jobId}?page=${page}`,{
+    method:'GET',
+     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+  });
+  if(!res.ok) throw new Error('Creation Failed');
+  return res.json();
+}
+
+export const addMeeting=async(payload:any)=>{
+  const res=await fetch(`${BASE_URL}/meeting/addMeeting`,{
+    method:'POST',
+     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+      body: JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error('Creation Failed');
+  return res.json();
+}
+export const selection=async(payload:any)=>{
+  const res=await fetch(`${BASE_URL}/meeting/selection`,{
+    method:'POST',
+     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+      body: JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error('Creation Failed');
+  return res.json();
+}
