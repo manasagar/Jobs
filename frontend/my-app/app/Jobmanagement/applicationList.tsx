@@ -9,6 +9,24 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+import {
+ Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+
+
+
+ 
 import { Button } from "@/components/ui/button";
 import {
   Pagination,
@@ -18,15 +36,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Mail, Clock, Calendar, FileText } from "lucide-react"
+import { Mail,  Calendar, Check } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { se } from "date-fns/locale";
+
 export default function AppList({jobId}:{jobId:number}){
+    const [newStatus, setNewStatus] = useState("NextRound")
 const [isDataLoading, setIsDataLoading] = useState(false);
+const [selectedCandidate,setSelectedCandidate]=useState("");
 const [applications,setApplications]=useState<any[]>([]);
 const [currentPage,setCurrentPage]=useState(0);
   const [totalPages,setTotalPages]=useState(1)
-  
+  const [statusNote, setStatusNote] = useState("")
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [applicationId,setApplicationId]=useState(-1);
 const getApplications=async()=>{
   let res;
   setIsDataLoading(true)
@@ -42,7 +64,13 @@ const getApplications=async()=>{
   setIsDataLoading(false);
 
 }
+const editChange=async(app:any)=>{
+  setIsDialogOpen(true);
+  setSelectedCandidate(app.jobseeker.email);
+  setApplicationId(app.id);
+}
 const Selection=async(candidateName:string)=>{
+
     const meeting: Omit<Meeting, "id"> = {
           recruiter:null,
           time:null,
@@ -50,8 +78,9 @@ const Selection=async(candidateName:string)=>{
           candidate:candidateName
         }
     try{
+      console.log(meeting)
     setIsDataLoading(true)
-    await selection(meeting);
+    await selection(meeting,statusNote,newStatus,applicationId);
     
   }
   catch(error){
@@ -61,6 +90,24 @@ const Selection=async(candidateName:string)=>{
      setIsDataLoading(false)
   }
 
+}
+const statusConfig = {
+
+    NextRound: {
+    label: "Next Round",
+    color: "bg-blue-100 text-blue-800 border-blue-200",
+   
+  },
+  Selected: {
+    label: "Approved",
+    color: "bg-green-100 text-green-800 border-green-200",
+    
+  },
+  Rejected: {
+    label: "Rejected",
+    color: "bg-red-100 text-red-800 border-red-200",
+   
+  }
 }
 useEffect(()=>{
   
@@ -91,10 +138,7 @@ useEffect(()=>{
             </a>
           </div>
 
-          <div className="flex items-center text-sm">
-            <FileText className="w-4 h-4 mr-2 text-muted-foreground" />
-            <span className="text-muted-foreground">{app.jobseeker.resume}</span>
-          </div>
+
         </div>
 
         
@@ -110,13 +154,100 @@ useEffect(()=>{
             <Calendar className="w-4 h-4 mr-1" />
             Applied {new Date(app.job.deadline).toLocaleDateString()}
           </div>
-          <Button  variant="outline" size="sm" onClick={()=>{Selection(app.jobseeker.email)}} >
-                            Schedule Meet
+          <Button  variant="outline" size="sm" onClick={()=>{editChange(app)}} >
+                           edit status
                             </Button>
+            <Dialog>
+      <form>
+        <DialogTrigger asChild>
+          <Button variant="outline">Open Resume</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Resume</DialogTitle>
+          </DialogHeader>
+                    <div className="flex items-center text-sm">
+            <iframe
+      src={`data:application/pdf;base64,${app.jobseeker.resume}`}
+      width="100%"
+      height="800px"
+      title="Parsed Resume"
+      className="border"
+    />
+
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit">Save changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
+    </Dialog>
         </div>
+         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit Application Status</DialogTitle>
+              <DialogDescription>
+                Update the status 
+              </DialogDescription>
+            </DialogHeader>
+   {isDataLoading?<DataLoader/>:
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="status">New Status</Label>
+                <Select value={newStatus} onValueChange={(value) => setNewStatus(value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+               
+                  <SelectContent>
+                    {Object.entries(statusConfig).map(([key, config]) => {
+                      
+                      return (
+                        <SelectItem key={key} value={key}>
+                          <div className="flex items-center gap-2">
+                            {config.label}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="note">Status Note (Optional)</Label>
+                <Textarea
+                  id="note"
+                  placeholder="Add a note about this status change..."
+                  value={statusNote}
+                  onChange={(e) => setStatusNote(e.target.value)}
+                  rows={3}
+                />
+              </div>
+            </div>
+                  }
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={()=>{Selection(selectedCandidate,)}}>
+                <Check className="h-4 w-4 mr-1" />
+                Update Status
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
-    { (
+    
+            </>
+          ))}
+          { (
         <div className="mt-8 flex justify-center">
           <Pagination>
             <PaginationContent>
@@ -158,8 +289,6 @@ useEffect(()=>{
           </Pagination>
         </div>
       )}
-            </>
-          ))}
         </>
     )
 }

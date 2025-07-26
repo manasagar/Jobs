@@ -11,10 +11,9 @@ interface MeetingCardProps {
   job:number
   link:string
   jobInfo:any
-  recruiter:string
 }
 import { prettyDate } from "@/components/styles/preMadeToasts"
-export function MeetingCard({ title, time, participants, status,toSchedule,job,link,jobInfo,recruiter }: MeetingCardProps) {
+export function MeetingCard({ title, time, participants, status,toSchedule,job,link,jobInfo }: MeetingCardProps) {
      const[showJobMeetingDialog,setShowJobMeetingDialog]=useState(false);
   return (
     <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -29,16 +28,14 @@ export function MeetingCard({ title, time, participants, status,toSchedule,job,l
               <Clock className="mr-1 h-3.5 w-3.5" />
               {time?prettyDate(time):null}
             </div>
-           
             <div className="flex items-center text-sm text-muted-foreground">
               <Users className="mr-1 h-3.5 w-3.5" />
-            {recruiter}
+              {jobInfo.jobseeker.name}
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Users className="mr-1 h-3.5 w-3.5" />
               {jobInfo.job.jobTitle}
             </div>
-           
           </div>
         </div>
       </div>
@@ -69,3 +66,5 @@ export function MeetingCard({ title, time, participants, status,toSchedule,job,l
     </div>
   )
 }
+
+

@@ -1,9 +1,6 @@
 package com.Job.restservices.service;
 
-import com.Job.restservices.entity.JobApplications;
-import com.Job.restservices.entity.JobDetails;
-import com.Job.restservices.entity.Meeting;
-import com.Job.restservices.entity.Recruiter;
+import com.Job.restservices.entity.*;
 import com.Job.restservices.repository.JobApplicationsRepository;
 import com.Job.restservices.repository.JobDetailsRepository;
 import com.Job.restservices.repository.MeetingRepository;
@@ -19,6 +16,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,18 +49,12 @@ public class MeetingService {
     private MeetingRepository meetingRepository;
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
-  //  @Scheduled(cron = "0 10 14 * * ?", zone = "Asia/Kolkata") // use zone if needed
-  //  private void runMonthlyJob() {
-//        System.out.println("Running job at 2 PM on the 10th!");
-//        log.info("lets go bitches");
-  //  }
-//    public String beginSchedule(String email) throws MessagingException {
-//        MimeMessage message = mailSender.createMimeMessage();
-//        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//        helper.setTo("manasagarwal1209@gmail.com");
-//
-//        helper.setText("Please find your Zoom meeting calendar invite attached.");
-//    }
+    @Scheduled(cron = "0 14 13 * * ?", zone = "Asia/Kolkata")
+    private void runDailyJob() {
+        log.info("Deleting old meetings");
+        meetingRepository.removeUselessMeet();
+    }
+
 
     private String createMeeting(String topic, String startTimeUTC, int durationMinutes) throws Exception {
         String token = zoomTokenService.getAccessToken();
@@ -109,7 +101,7 @@ public class MeetingService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(mail1);
         helper.setSubject(description);
-        helper.setText("Please find your Zoom meeting calendar invite attached."+summary);
+        helper.setText("Please find your Zoom meeting calendar invite attached.  "+summary);
         helper.addAttachment("meeting.ics", new ByteArrayResource(ics.getBytes()), "text/calendar");
         mailSender.send(message);
         helper.setTo(mail2);
@@ -156,18 +148,22 @@ public class MeetingService {
             ZonedDateTime zonedUTC = zonedIST.withZoneSameInstant(ZoneOffset.UTC);
             LocalDateTime utcDateTime = zonedUTC.toLocalDateTime();
             Meeting meeting1=meetingRepository.findMeeting(meeting.getTime(),recruiter.getEmail());
-            meeting1.setApplied(true);
+            Meeting meeting2=meetingRepository.findByJobAndJobseeker(candidate,jobDetails.getId());
+            meetingRepository.deleteById(meeting1.getId());
+
+            meeting2.setApplied(true);
+
             String link=scheduleMeet("create the meeting",utcDateTime.toString(),90,meeting.getCandidate(),meeting.getRecruiter().getEmail());
-            meeting1.setCandidate(meeting.getCandidate());
-            meeting1.setZoomLink(link);
-            meetingRepository.save(meeting1);
+            meeting2.setCandidate(meeting.getCandidate());
+            meeting2.setZoomLink(link);
+            meeting2.setTime(meeting1.getTime());
+            meetingRepository.save(meeting2);
 
             JobApplications jobApplications=jobApplicationsRepository.findByJobAndJobseeker(meeting.getCandidate(), meeting.getJob()).get();
-            if(!jobApplications.isMeet())
-                throw new BadRequestException("invaid");
 
-            jobApplications.setScheduleMeet(meeting1);
-            jobApplicationsRepository.save(jobApplications);
+
+
+
             return "slot applied";
         }
     }
@@ -176,20 +172,32 @@ public class MeetingService {
                 .map(Timestamp::toLocalDateTime)
                 .toList();
     }
-    public String selectCandidate(Meeting meeting,String interviewer) throws MessagingException {
+    public String finalCommunication(Meeting meeting,String status,String content ) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(meeting.getCandidate());
+        if(status.equals( Status.Rejected.toString()))
+        {
+            helper.setSubject("You have been Rejected");
+        }
+        else{
+            helper.setSubject("Congrats Selected");
+        }
+        helper.setText(content);
+        mailSender.send(message);
+        return "ok";
+    }
+    public String selectCandidate(Meeting meeting,String interviewer,String note,Integer applicationId) throws MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setSubject("Congrats Interview");
         helper.setTo(meeting.getCandidate());
-        helper.setText("You are invited to interview at "+meeting.getJob()+" please schedule meeting immediatly");
-        JobApplications jobApplications=jobApplicationsRepository.findByJobAndJobseeker(meeting.getCandidate(),meeting.getJob()).get();
-        jobApplications.setMeet(true);
-
+        helper.setText(note);
         Recruiter recruiter=recruiterRepository.findById(interviewer).get();
         meeting.setRecruiter(recruiter);
-        jobApplications.setScheduleMeet(meeting);
-        jobApplicationsRepository.save(jobApplications);
+        meeting.setJobApplications(jobApplicationsRepository.findById(applicationId).get());
+        meetingRepository.save(meeting);
         mailSender.send(message);
         return "ok";
     }

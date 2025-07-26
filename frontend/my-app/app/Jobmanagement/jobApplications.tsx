@@ -1,11 +1,6 @@
 
 import { useState } from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+
 import { ArrowLeft } from 'lucide-react';
 import ApplicationList from "./applicationList"
 import MeetingList from "./meeting"

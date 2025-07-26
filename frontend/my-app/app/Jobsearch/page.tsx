@@ -1,10 +1,8 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
-
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState,  useEffect } from "react"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
@@ -15,58 +13,71 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+
 import { Search} from "lucide-react"
 import {ProfileButton} from "@/components/Job/profile-button"
 import { appliedJobList, applyJob, jobList, savedJobList, saveJob } from "@/data/urlJobseeker"
-
+import { jobApplied,jobSaved } from "@/components/styles/preMadeToasts"
 import AllJob from "./allJob"
 import AllApplication from "./allApplication"
-
+import { Loader } from "@/components/loader/loader"
+import { checkLogin } from "@/data/common"
+import { useRouter } from "next/navigation"
 
 const JOBS_PER_PAGE = 3
 
 export default function JobSearchPage() {
+  const router=useRouter();
+  const[loaderActive,setLoacterActive]=useState(false)
   const [jobs, setJobs] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [locationFilter, setLocationFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
+  
   const [currentPage, setCurrentPage] = useState(0)
   const [activeTab, setActiveTab] = useState("all")
   const [totalPages, setTotalPages] = useState(0)
-  const [totalCount, setTotalCount] = useState(0)
   const [refresh,setRefresh] =useState(0);
+  
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
     setCurrentPage(0) 
   }
 
 const getJobs=async ()=>{
+   setLoacterActive(true)
    let res=await jobList(currentPage);
    
    setJobs(res.content);
    setTotalPages(res.totalPages);
-   setTotalCount(res.totalElements)
+    setLoacterActive(false)
+
   
 }
 const getSavedJobs=async()=>{
+   setLoacterActive(true)
    let res=await savedJobList(currentPage);
    setJobs(res.content);
    setTotalPages(res.totalPages);
-  setTotalCount(res.totalElements)
+ setLoacterActive(false)
 
 }
 const getAppliedJobs=async()=>{
+  setLoacterActive(true)
   let res=await appliedJobList(currentPage);
+  
    setJobs(res.content);
    setTotalPages(res.totalPages);
-   setTotalCount(res.totalElements)
+   setLoacterActive(false)
+  
+
 
 }
 
   
 
   useEffect(() => {
-    
+    if(!checkLogin())
+      router.push('/')
+      
     if(activeTab=='all'){
         getJobs();
     }
@@ -76,14 +87,16 @@ const getAppliedJobs=async()=>{
     else{
         getAppliedJobs();
     }
-  }, [searchTerm, locationFilter, typeFilter, activeTab,currentPage,refresh])
+  }, [activeTab,currentPage,refresh])
 
   const handleApply = async (jobId: number) => {
+    jobApplied();
     await applyJob(jobId);
     setRefresh(prev=>prev+1)
   }
 
   const handleSave = async(jobId: number) => {
+    jobSaved()
     await saveJob(jobId);
     setRefresh(prev=>prev+1);
   }
@@ -92,9 +105,11 @@ const getAppliedJobs=async()=>{
     console.log(page)
     setCurrentPage(page)
   }
-
+ 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+ 
+
      <div className="mb-8 flex items-center justify-between">
     <div>
       <h1 className="text-3xl font-bold mb-2">Find Your Dream Job</h1>
@@ -105,44 +120,10 @@ const getAppliedJobs=async()=>{
     <ProfileButton variant="minimal" />
   </div>
      
-      {/* Search and Filters */}
+     
       <div className="mb-6 space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search jobs, companies, or skills..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Select value={locationFilter} onValueChange={setLocationFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Location" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Locations</SelectItem>
-                <SelectItem value="remote">Remote</SelectItem>
-                <SelectItem value="san francisco">San Francisco</SelectItem>
-                <SelectItem value="new york">New York</SelectItem>
-                <SelectItem value="austin">Austin</SelectItem>
-                <SelectItem value="seattle">Seattle</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Job Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Full-time">Full-time</SelectItem>
-                <SelectItem value="Part-time">Part-time</SelectItem>
-                <SelectItem value="Contract">Contract</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+         
         </div>
       </div>
 
@@ -162,7 +143,7 @@ const getAppliedJobs=async()=>{
             
           </TabsTrigger>
         </TabsList>
-
+        {loaderActive?<Loader/>:<>
         <TabsContent value="all" className="mt-6">
         <AllJob
             jobs={jobs}
@@ -189,6 +170,8 @@ const getAppliedJobs=async()=>{
             emptyMessage="You haven't applied to any jobs yet."
           />
         </TabsContent>
+        </>
+}
       </Tabs>
 
       {/* Pagination */}

@@ -7,7 +7,12 @@ import { useState,useRef } from "react"
 import { useRouter } from "next/navigation"
 import {Button} from "@/components/ui/button"
 import { DataLoader } from "@/data/common"
+import { Badge } from "@/components/ui/badge"
+import { Plus, X } from "lucide-react"
 export default function Candidate(){
+      const [skills,setSkills]=useState<string[]>([]);
+        const [skill,setSkill]=useState("");
+
    const [isDataLoading, setIsDataLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +30,15 @@ const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
   const handleUploadClick = () => {
     inputRef.current?.click();
   };
+   function addSkill(){
+    if (skill&& skill.trim() && !skills.includes(skill.trim())) {
+      setSkills([...skills, skill.trim()])
+      setSkill("")
+    }
+  }
+    const removeSkill = (skillToRemove: string) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove))
+  }
 const RegisterCandidate= async ()=>{
  
 
@@ -32,7 +46,8 @@ const RegisterCandidate= async ()=>{
     name:name,
     email:email,
     password:password,
-    role:"CANDIDATE"
+    role:"CANDIDATE",
+    skills:skills
   }
   
   try{
@@ -92,7 +107,33 @@ catch(e){
               
             </div>
             
-          
+            <div className="grid gap-3">
+              <Label htmlFor="username-3">Skills</Label>
+                    <div className="flex gap-2">
+                        <Input placeholder="Enter a skill..." value={skill} onChange={(e) => setSkill(e.target.value)} className="flex-1"/>
+                        <Button onClick={addSkill} size="icon" variant="outline">
+                        <Plus className="h-4 w-4" />
+                        </Button>
+                    </div>
+                   <div className="flex flex-wrap gap-2">
+                     {skills.map((skill) => (
+            <Badge
+              key={skill}
+              variant="secondary"
+              className="px-3 py-1 text-sm flex items-center gap-2 hover:bg-secondary/80 transition-colors"
+            >
+              <span>{skill}</span>
+              <button
+                onClick={() => removeSkill(skill)}
+                className="hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                aria-label={`Remove ${skill}`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+            ))}
+            </div>
+            </div>
           
             <div className="space-y-2">
               <Label htmlFor="resume">Resume</Label>

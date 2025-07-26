@@ -24,13 +24,11 @@ public class JobApplications {
     @ManyToOne
     @JoinColumn(name = "jobseeker_id", nullable = false)
     private Jobseeker jobseeker;
+    @Enumerated(EnumType.STRING)
     @Column(name = "application_status")
-    private String applicationStatus; // e.g., Applied, Interview, Selected, Rejected
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "schedule_meet_id", referencedColumnName = "id")
-    private Meeting scheduleMeet;
-    @Column(name="meet")
-    private boolean meet;
+    private Status applicationStatus;
+
+
     @Column(name ="is_saved")
     private boolean saved;
     @Column(name = "applied_on")

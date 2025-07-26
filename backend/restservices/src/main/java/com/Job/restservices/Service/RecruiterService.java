@@ -1,25 +1,21 @@
 package com.Job.restservices.service;
 
-import com.Job.restservices.dto.JobFilter;
 import com.Job.restservices.dto.JwtResponse;
 import com.Job.restservices.entity.*;
-import com.Job.restservices.notifications.NotificationTypes;
-import com.Job.restservices.notifications.annotations.Notify;
-import com.Job.restservices.repository.JobApplicationsRepository;
-import com.Job.restservices.repository.JobDetailsRepository;
-import com.Job.restservices.repository.RecruiterRepository;
-import com.Job.restservices.repository.UserRepository;
+import com.Job.restservices.repository.*;
+import jakarta.mail.MessagingException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class RecruiterService {
     @Autowired
@@ -32,6 +28,10 @@ public class RecruiterService {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    MeetingRepository meetingRepository;
+    @Autowired
+    MeetingService meetingService;
     public Recruiter getSelf(Principal principal){
         return recruiterRepository.findById(principal.getName()).get();
     }
@@ -48,15 +48,41 @@ public class RecruiterService {
         public List<JobDetails> getJobs(String recruiterId){
            return recruiterRepository.findById(recruiterId).get().getJobs();
         }
-        public Page<JobDetails>getJobs(String recruiterId,Pageable pageable){
+        public Page<JobDetails> getJobs(String recruiterId,Pageable pageable){
             return jobDetailsRepository.findByRecruiter(recruiterId,pageable);
         }
-      //  @Notify(mandatory = true,notificationTypes = {NotificationTypes.EMAIL})
-        public JobApplications changeJobStatus(String recruiterId, JobApplications jobApplications){
+        public JobApplications changeJobStatus(String interview,Meeting meeting, Integer jobApplicationId,String status,String note) throws BadRequestException, MessagingException {
+        log.info("1");
+        if(jobApplicationsRepository.findById(jobApplicationId).isEmpty()){
+            log.info("what {}",Status.Rejected.toString());
+        }
+        JobApplications jobApplications=jobApplicationsRepository.findById(jobApplicationId).get();
+            log.info("2");
+
+            if(status.equals(Status.NextRound.toString())){
+                log.info("3");
+                meetingService.selectCandidate(meeting,interview,note,jobApplicationId);
+            }
+            else if(status.equals(Status.Rejected.toString())){
+                log.info("4");
+               meetingService.finalCommunication(meeting,status,note);
+               jobApplications.setApplicationStatus(Status.Rejected);
+            }
+            else if(status.equals(Status.Selected.toString())){
+                log.info("5");
+                meetingService.finalCommunication(meeting,status,note);
+                jobApplications.setApplicationStatus(Status.Selected);
+            }
+            else{
+                throw new BadRequestException("wrong request");
+            }
            return jobApplicationsRepository.save(jobApplications);
         }
         public Page<JobApplications> getApplications(int jobId, Pageable pageable){
             return jobApplicationsRepository.findByJob(jobId,pageable);
+        }
+        public Page<Meeting> getMeeting(String recruiter_id,Pageable pageable){
+            return meetingRepository.getMeetingByRecruiter(recruiter_id,pageable);
         }
 //        public
 }

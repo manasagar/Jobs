@@ -13,19 +13,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import {Clock} from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import type { Application, Meeting } from "@/components/type/job"
-import { SimpleTimeInput } from "@/components/Job/simple-time-input"
-import { addMeeting } from "@/data/urlRecruiter"
+import { meetingCreated,prettyDate } from "../styles/preMadeToasts"
 import {getMeetingList}from "@/data/common"
 import { finaliseMeeting } from "@/data/urlJobseeker"
+import { DataLoader } from "@/data/common"
 interface MeetingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -36,11 +27,13 @@ interface MeetingDialogProps {
 export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDialogProps) {
   const[timeSlot,setTimeSlot]=useState<any[]>([])
   const[slot,setSlot]=useState({time:"",job:0});
+  const[loader,setLoader]=useState(false)
   useEffect(()=>{
     getTimeSlot()
     },[])
     const getTimeSlot=async()=>{
         let res;
+        setLoader(true)
         try{
        res=await getMeetingList(application)
        setTimeSlot(res)
@@ -48,6 +41,8 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
         catch(error){
             console.log(error)
         }
+         setLoader(false)
+
     }
   const Schedule= async(day:string)=>{
     let res;
@@ -55,18 +50,24 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
         time:day,
         job:application
     }
+   
     setSlot(meeting);
+
    
   }
  const onSubmit= async()=>{
     let res;
+     setLoader(true)
      try{
   res=await finaliseMeeting(slot);
-   onOpenChange(false)
+  
     }
     catch(error){
         console.log(error)
     }
+    meetingCreated(slot.time);
+    setLoader(false)
+     onOpenChange(false)
  }
 
   if (!application) return null
@@ -79,7 +80,7 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
           <DialogDescription>Schedule a meeting with candidate</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4">
-            {timeSlot.map((day) => (
+            {loader?<DataLoader/>:timeSlot.map((day) => (
               <>
                  <Button
           
@@ -90,7 +91,7 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
         >
         <div className="flex items-center gap-1 w-full">
             <Clock className="h-3 w-3" />
-            <span className="font-medium">{day}</span>
+            <span className="font-medium">{prettyDate(day)}</span>
           </div>
               
               </Button>

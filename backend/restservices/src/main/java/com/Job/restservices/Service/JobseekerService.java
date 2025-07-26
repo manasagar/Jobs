@@ -1,10 +1,7 @@
 package com.Job.restservices.service;
 
 import com.Job.restservices.dto.JwtResponse;
-import com.Job.restservices.entity.JobApplications;
-import com.Job.restservices.entity.JobDetails;
-import com.Job.restservices.entity.Jobseeker;
-import com.Job.restservices.entity.Meeting;
+import com.Job.restservices.entity.*;
 import com.Job.restservices.repository.JobApplicationsRepository;
 import com.Job.restservices.repository.JobDetailsRepository;
 import com.Job.restservices.repository.JobseekerRepository;
@@ -63,14 +60,14 @@ public class JobseekerService {
         if(jobApplicationsRepository.findByJobAndJobseeker(jobseekerId,jobId).isPresent()){
             jobApplications=jobApplicationsRepository.findByJobAndJobseeker(jobseekerId,jobId).get();
             if(jobApplications.getApplicationStatus()==null) {
-                jobApplications.setApplicationStatus("applied");
+                jobApplications.setApplicationStatus(Status.applied);
                 jobApplications.setAppliedOn(LocalDate.now());
             }
         }
         else {
             jobApplications.setJob(jobDetails);
             jobApplications.setJobseeker(jobseeker);
-            jobApplications.setApplicationStatus("applied");
+            jobApplications.setApplicationStatus(Status.applied);
             jobApplications.setAppliedOn(LocalDate.now());
         }
         return jobApplicationsRepository.save(jobApplications);
@@ -99,11 +96,11 @@ public class JobseekerService {
             return jobApplicationsRepository.save(jobApplications);
 
     }
-    public Page<JobApplications> getJobApplications(String jobseekerId,String location,String status,Pageable pageable){
+    public Page<JobApplications> getJobApplications(String jobseekerId,Pageable pageable){
         return jobApplicationsRepository.findByJobAndJobseekerAndApplied(jobseekerId,pageable);
     }
-    public Page<JobDetails> getJobs(String company,String location,Pageable pageable){
-        return jobDetailsRepository.findFilteredJobs(location,pageable);
+    public Page<JobDetails> getJobs(Pageable pageable){
+        return jobDetailsRepository.findFilteredJobs(pageable);
     }
     public void updateResume(String jobseekerName,byte[] resume) throws  Exception{
         Jobseeker jobseeker=jobseekerRepository.findById(jobseekerName).get();

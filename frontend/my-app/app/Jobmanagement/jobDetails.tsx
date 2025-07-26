@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {MeetingDialog} from "@/components/Job/job-meeting-dialog"
@@ -13,13 +13,24 @@ import {
   Edit,
  
 } from "lucide-react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import { AddJob } from "@/components/Job/addJob"
 import { jobList } from "@/data/urlRecruiter"
+
 export default function JobDetails({ changeApplication }: { changeApplication : (id:any) => void }){
   const[showJobMeetingDialog,setShowJobMeetingDialog]=useState(false);
   const[selectedJobForMeeting,setSelectedJobForMeeting]=useState(-1);
   const [refresh,setRefresh]=useState(0);
   const [jobs,setJobs]=useState<any[] >([]);
+  const [currentPage,setCurrentPage]=useState(0);
+  const [totalPages,setTotalPages]=useState(1);
   const onSubmit=()=>{
     setRefresh(prev=>prev+1)
   }
@@ -35,8 +46,9 @@ export default function JobDetails({ changeApplication }: { changeApplication : 
   }
   const getJobs=async ()=>{
     try{
-    const res=await jobList();
+    const res=await jobList(currentPage);
      setJobs(res.content);
+     setTotalPages(res.totalPages);
      console.log(res.content);
      return res;
     }
@@ -44,28 +56,17 @@ export default function JobDetails({ changeApplication }: { changeApplication : 
       console.log(error);
     }
     
+    
   }  
 useEffect(()=>{
   getJobs()
-},[refresh])
+},[refresh,currentPage])
 return(<>
 
 <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Job Management</h2>
-              <div className="flex items-center space-x-4">
-                <Select defaultValue="all">
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Jobs</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="closed">Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-               
-                  <AddJob onSubmit={onSubmit}/>
+              <div className="flex items-center space-x-4"> 
+              <AddJob onSubmit={onSubmit}/>
                 
               </div>
             </div>
@@ -122,6 +123,48 @@ return(<>
                       </TableRow>
                     ))
                     }
+                    { (
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (currentPage > 0) {setCurrentPage(prev=>prev-1)}
+                  }}
+                  className={currentPage === 0 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setCurrentPage(page-1)
+                    }}
+                    isActive={currentPage === page-1}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (currentPage < totalPages-1) setCurrentPage(prev=>prev+1)
+                  }}
+                  className={currentPage === totalPages-1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
                   </TableBody>
                 </Table>
               </CardContent>
