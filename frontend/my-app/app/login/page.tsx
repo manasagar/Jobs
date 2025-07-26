@@ -21,7 +21,7 @@ export default   function  LoginPage()  {
       email:email,
       password:password
     }
-    console.log("hello");
+   
      try{
     setIsDataLoading(true);
     await loginUser(request);
@@ -59,11 +59,7 @@ export default   function  LoginPage()  {
             <Label htmlFor="password">Password</Label>
             <Input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e)=>{setPassword(e.target.value)}} required />
           </div>
-          <div className="flex items-center justify-between">
-            <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
-              Forgot password?
-            </Link>
-          </div>
+          
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <Button type="submit" className="w-full" onClick={onSubmit}>

@@ -3,10 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Edit } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Calendar, Clock, Edit, ExternalLink, MoreHorizontal, Search, Users } from "lucide-react"
 import { useEffect ,useState} from "react"
 import {MeetingCard} from "./meetingCard"
-import { getMeetingByJobseeker ,getSelf } from "@/data/urlJobseeker"
+import { getMeetingByRecruiter, getSelf } from "@/data/urlRecruiter"
 import {
   Pagination,
   PaginationContent,
@@ -15,34 +17,35 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-  import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { checkLogin } from "@/data/common"
 import { DataLoader } from "@/data/common"
 export default function ProfilePage() {
-  const router=useRouter();
     const [user,setUser]=useState({name:"",email:"",skills:[]})
-   const [loader,setLoader]=useState(false)
+   const router=useRouter();
 const [meetings,setMeetings]=useState<any[]>([])
 const [currentPage,setCurrentPage]=useState(0);
 const [totalPages,setTotalPages]=useState(1);
+const [loader,setLoader]=useState(false)
 const getMeeting=async()=>{
 let res;
-setLoader(true)
+ setLoader(true);
 try{
-    res= await getMeetingByJobseeker(currentPage);
+   
+    res= await getMeetingByRecruiter(currentPage);
     setMeetings(res.content);
     setTotalPages(res.totalPages);
 }
 catch(error){
     console.log(error);
 }
-setLoader(false)
-
+ setLoader(false);
 }
 const getUser=async()=>{
     let res;
-    setLoader(true)
+     setLoader(true);
     try{
+        
         res=await getSelf();
         setUser(res);
         console.log(user,"hello")
@@ -50,12 +53,11 @@ const getUser=async()=>{
     catch(error){
         console.log(error);
     }
-    setLoader(false)
-
+     setLoader(false);
 }
 useEffect(()=>{
-  if(!checkLogin())
-    router.push('/')
+    if(!checkLogin())
+        router.push('/');
     getMeeting()
     getUser()
 },[currentPage])
@@ -98,7 +100,6 @@ let counter=0;
                   </div>
                 </div>
                 <div>
-
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Skills</h3>
                   <div className="flex items-center gap-2">
                     {user.skills&&user.skills.length?user.skills.map((skill)=>(
@@ -106,15 +107,11 @@ let counter=0;
                         <Badge variant="outline">{skill}</Badge>
                         </>
                     )):<><Badge variant="outline">NA</Badge></>}
-                    
+
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Bio</h3>
-                  <p className="text-sm">
-                    Product Manager with 5+ years of experience in SaaS products. Passionate about creating
-                    user-centered solutions and driving product strategy.
-                  </p>
+                  
                 </div>
               </div>
             </CardContent>
@@ -140,7 +137,6 @@ let counter=0;
                         title="interview"
                         time={meeting.time}
                         participants={2}
-                        recruiter={meeting.recruiter.name}
                         status="upcoming"
                         toSchedule={meeting.time==null}
                         job={meeting.job}
@@ -199,7 +195,6 @@ let counter=0;
             </CardContent>
           </Card>
         </div>
-
       </div>
     </div>
   )

@@ -6,7 +6,9 @@ import com.Job.restservices.entity.Recruiter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.sql.Timestamp;
@@ -29,6 +31,15 @@ public interface MeetingRepository extends JpaRepository<Meeting,Long> {
     @Query(value="SELECT COUNT(*) as total FROM MEETING WHERE RECRUITER_ID IS NOT NULL AND RECRUITER_ID=?2 AND TIME IS NOT NULL AND \n"
             +"NOT((TIME + INTERVAL 90 MINUTE < ?1) OR (?1 + INTERVAL 90 MINUTE < TIME )) ",nativeQuery = true)
     public Long findAllConflict(LocalDateTime startTime, String  recruiter);
+    @Query(value="SELECT * FROM MEETING WHERE RECRUITER_ID IS NOT NULL AND RECRUITER_ID=?1 AND CANDIDATE IS NOT NULL AND TIME IS NOT NULL",nativeQuery = true)
+    public Page<Meeting> getMeetingByRecruiter(String recruiter,Pageable pageable);
+    @Modifying
+    @Transactional
+    @Query(value="DELETE FROM MEETING\n" +
+            "WHERE TIME IS NOT  NULL AND TIME < NOW();",nativeQuery = true)
+    public  void removeUselessMeet();
+    @Query(value="SELECT * FROM MEETING WHERE JOB=?2 AND CANDIDATE=?1 LIMIT 1",nativeQuery = true)
+    public Meeting findByJobAndJobseeker(String candidate,int job);
 
 
 }

@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { jobAdded } from "../styles/preMadeToasts"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { Input } from "@/components/ui/input"
@@ -30,6 +31,7 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
   const [skill,setSkill]=useState("");
   const [skills,setSkills]=useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false)
+  const [stipend,setStipend]= useState("");
   function addSkill(){
     if (skill.trim() && !skills.includes(skill.trim())) {
       setSkills([...skills, skill.trim()])
@@ -51,9 +53,13 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
       jobTitle:jobTitle,
       deadline:date?date.toISOString().split('T')[0]:"",
       type:type,
-      location:location
+      location:location,
+      stipend:stipend,
+      status:"open"
     }
+    jobAdded(jobTitle);
   const response= await createNewJob(request);
+    
   console.log(response,"hello");
     onSubmit();
   }
@@ -90,6 +96,10 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
             <div className="grid gap-3">
               <Label htmlFor="username-3">type</Label>
               <Input id="username-1" name="username" value={type} onChange={(e)=>{setType(e.target.value)}}/>
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="username-4">stipend</Label>
+              <Input id="username-4" name="username" value={stipend} onChange={(e)=>{setStipend(e.target.value)}}/>
             </div>
         <div className="space-y-2">
             <Label htmlFor="date-picker">Deadline</Label>
@@ -151,3 +161,5 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
     </Dialog>
   )
 }
+
+

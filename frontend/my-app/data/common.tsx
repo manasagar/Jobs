@@ -1,5 +1,5 @@
 import { Loader } from "@/components/loader/loader"
-import { Meera_Inimai } from "next/font/google";
+
 
 export interface JwtResponse {
   jwtToken: string;
@@ -50,9 +50,9 @@ export const checkLogin=()=>{
     else{
         const storedUser=localStorage.getItem('user');
         const user:JwtResponse|undefined=storedUser?JSON.parse(storedUser):undefined;
-        
+        const  expiry = user?new Date(user.expiryDate):undefined;
         const now = Date.now() / 1000;
-        if(user?(user.expiryDate?(now-user.expiryDate.getSeconds()<=5*60*60):false):false)
+        if((expiry?(now-expiry.getTime()/1000<=5*60*60):false))
             return true;
         return false;
     }
@@ -77,6 +77,8 @@ export interface JobPayload{
   type:string;
   location:string;
   deadline:string|undefined;
+  stipend:string,
+  status:string
 }
 export interface PaginatedResponse<T> {
   content: T[];
@@ -86,6 +88,19 @@ export interface PaginatedResponse<T> {
   size: number;
   first: boolean;
   last: boolean;
+}
+export function base64ToBlobUrl(base64: string, mimeType = "application/pdf") {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+
+  for (let i = 0; i < byteCharacters.length; i += 512) {
+    const slice = byteCharacters.slice(i, i + 512);
+    const byteNumbers = new Array(slice.length).fill(0).map((_, j) => slice.charCodeAt(j));
+    byteArrays.push(new Uint8Array(byteNumbers));
+  }
+
+  const blob = new Blob(byteArrays, { type: mimeType });
+  return URL.createObjectURL(blob);
 }
 export function DataLoader(){
   return(<>

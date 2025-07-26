@@ -13,7 +13,6 @@ import {
 import { useRouter } from "next/navigation"
 import { logoutUser ,checkRole} from "@/data/common"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { User, Settings, LogOut, Bell, HelpCircle, Shield, CreditCard, ChevronDown } from "lucide-react"
 
 interface UserProfile {
@@ -37,7 +36,7 @@ interface ProfileButtonProps {
 export function ProfileButton({
  
   variant = "default",
-  showStatus = true,
+
   showDropdown = true,
   className,
  
@@ -59,18 +58,18 @@ const router=useRouter()
     }
   }
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
+  
   const toProfile=()=>{
+    if(checkRole()=='CANDIDATE')
     router.push("/userProfile")
+    else
+    router.push("/recruiterProfile")
   }
-
+  const UserLogout=()=>{
+    console.log("done")
+    router.push("/")
+    logoutUser();
+  }
   const ProfileAvatar = () => (
     <div className="relative">
       <Avatar className={variant === "compact" ? "h-8 w-8" : "h-9 w-9"}>
@@ -115,7 +114,7 @@ const router=useRouter()
             Profile
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logoutUser} className="text-red-600">
+          <DropdownMenuItem onClick={UserLogout} className="text-red-600">
             <LogOut className="mr-2 h-4 w-4" />
             Log out
           </DropdownMenuItem>
@@ -161,7 +160,7 @@ const router=useRouter()
             Profile
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logoutUser} className="text-red-600">
+          <DropdownMenuItem onClick={UserLogout} className="text-red-600">
             <LogOut className="mr-2 h-4 w-4" />
             Log out
           </DropdownMenuItem>
@@ -216,7 +215,7 @@ const router=useRouter()
          
         
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logoutUser} className="text-red-600">
+          <DropdownMenuItem onClick={UserLogout} className="text-red-600">
             <LogOut className="mr-2 h-4 w-4" />
             Log out
           </DropdownMenuItem>
@@ -258,7 +257,7 @@ const router=useRouter()
         </DropdownMenuItem>
        
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logoutUser} className="text-red-600">
+        <DropdownMenuItem onClick={UserLogout} className="text-red-600">
           <LogOut className="mr-2 h-4 w-4" />
           Log out
         </DropdownMenuItem>

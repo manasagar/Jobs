@@ -8,6 +8,7 @@ import { JwtResponse, SaveJwt,extractToken ,BASE_URL,JobPayload} from "./common"
   email: string;
   password: string;
   role:string;
+  skills:Array<string>; 
 }
 
 export const jobList=async(page:number)=>{

@@ -51,24 +51,20 @@ public class JobseekerController {
     public Page<JobApplications> getJobs(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "3") int size,
                                          @RequestParam(defaultValue = "id") String sortBy,
-                                         @RequestParam(defaultValue = "") String location,
-                                         @RequestParam(defaultValue = "")String company,
-                                         @RequestParam(defaultValue = "applied")String status,
-                                         Principal principal
+                                         Principal principal)
 
-    ) {
+     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return  jobseekerService.getJobApplications(principal.getName(),location,status,pageable);
+        return  jobseekerService.getJobApplications(principal.getName(),pageable);
     }
     @GetMapping(path="/getJobs",produces = MediaType.APPLICATION_JSON_VALUE)
     public  Page<JobDetails> getApplications(@RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "3") int size,
-                                             @RequestParam(defaultValue = "id") String sortBy,
-                                             @RequestParam(defaultValue = "") String location,
-                                             @RequestParam(defaultValue = "")String company)
+                                             @RequestParam(defaultValue = "id") String sortBy
+                                             )
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return jobseekerService.getJobs(company,location,pageable);
+        return jobseekerService.getJobs(pageable);
     }
     @GetMapping(path="/applyJob",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> applyJob(@RequestParam(required = true) int jobId,

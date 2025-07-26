@@ -20,5 +20,8 @@ public class Meeting {
     boolean applied;
     int job;
     String zoomLink;
+    @ManyToOne
+    @JoinColumn(name = "job_applications_id")
+    private JobApplications jobApplications;
 
 }

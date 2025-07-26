@@ -16,9 +16,16 @@ export interface RegisterPayload {
   linkedein:string;
   companyName:string;
 }
-
-export const jobList=async()=>{
-   const res = await fetch(`${BASE_URL}/recruiter/get`, {
+export const getSelf= async()=>{
+    const res= await fetch(`${BASE_URL}/recruiter/self`,{
+      method:"GET",
+      headers:{'Authorization': `Bearer ${extractToken()}`}
+    })
+    if (!res.ok) throw new Error('no self');
+    return res.json();
+  }
+export const jobList=async(page:number)=>{
+   const res = await fetch(`${BASE_URL}/recruiter/get?page=${page}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
@@ -87,12 +94,21 @@ export const addMeeting=async(payload:any)=>{
   if(!res.ok) throw new Error('Creation Failed');
   return res.json();
 }
-export const selection=async(payload:any)=>{
-  const res=await fetch(`${BASE_URL}/meeting/selection`,{
+export const selection=async(meeting:any,note:string,status:string,application:number)=>{
+  const res=await fetch(`${BASE_URL}/recruiter/edit?note=${note}&status=${status}&jobApplicationId=${application}`,{
     method:'POST',
      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
-      body: JSON.stringify(payload)
+      body: JSON.stringify(meeting)
   });
   if(!res.ok) throw new Error('Creation Failed');
   return res.json();
 }
+export const getMeetingByRecruiter = async(page:number)=>{
+    const res = await fetch(`${BASE_URL}/recruiter/meeting?page=${page}`, {
+      method:'GET',
+      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+
+    })
+    if (!res.ok) throw new Error('Meeting Failed');
+  return res.json();
+  }
