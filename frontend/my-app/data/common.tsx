@@ -1,4 +1,5 @@
 import { Loader } from "@/components/loader/loader"
+import { Meera_Inimai } from "next/font/google";
 
 export interface JwtResponse {
   jwtToken: string;
@@ -27,6 +28,22 @@ export const loginUser = async (payload: LoginPayload) => {
    await SaveJwt(jwtResponse);
   return res.json();
 };
+export const getMeetingList = async (job:number) => {
+
+  const res = await fetch(`${BASE_URL}/meeting/recruiter/${job}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+   
+  });
+
+  if (!res.ok) {console.log(res)
+    throw new Error('Meeting List');}
+  return res.json();
+};
+export const logoutUser= async()=>{
+  if(checkLogin())
+    localStorage.removeItem('user');
+}
 export const checkLogin=()=>{
     if(localStorage.getItem('user')==null)
         false;
@@ -46,6 +63,7 @@ export const checkRole=()=>{
     return user?user.role:undefined;
      
 }
+
 export const extractToken=()=>{
     const storedUser=localStorage.getItem('user');
     const user:JwtResponse|undefined=storedUser?JSON.parse(storedUser):undefined;

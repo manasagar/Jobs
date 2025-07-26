@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Building2, MapPin, Clock, BookmarkCheck, Bookmark, DollarSign, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-export default function AllJob({jobs,onSave,onApply,emptyMessage}:{jobs: any
+export default function AllApplication({jobs,onSave,onApply,emptyMessage}:{jobs: any
   onApply: (jobId: number) => void
   onSave: (jobId: number) => void
   emptyMessage: string}){
@@ -34,25 +34,25 @@ if (jobs.length === 0) {
                 <CardDescription className="flex items-center gap-4 text-sm">
                   <span className="flex items-center gap-1">
                     <Building2 className="h-4 w-4" />
-                    {job.jobDescription}
+                    {job.job.jobDescription}
                   </span>
                   <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4" />
-                    {job.location}
+                    {job.job.location}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
-                    {job.type}
+                    {job.job.type}
                   </span>
                 </CardDescription>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onSave(job.id)}
+                onClick={() => onSave(job.job.id)}
                 className="text-muted-foreground hover:text-foreground"
               >
-                {job.isSaved ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+                {job.saved ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
               </Button>
             </div>
           </CardHeader>
@@ -60,10 +60,10 @@ if (jobs.length === 0) {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium">{job.stipend}</span>
-                <span className="text-muted-foreground">• {job.deadline}</span>
+                <span className="font-medium">{job.job.stipend}</span>
+                <span className="text-muted-foreground">• {job.job.deadline}</span>
               </div>
-              <p className="text-muted-foreground">{job.skills}</p>
+
               {/* <div className="flex flex-wrap gap-2">
                 {job.tags.map((tag) => (
                   <Badge key={tag} variant="secondary">
@@ -74,7 +74,7 @@ if (jobs.length === 0) {
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-
+           
             <div className="flex gap-2">
               {job.isApplied ? (
                 <Button disabled className="bg-green-100 text-green-800 hover:bg-green-100">

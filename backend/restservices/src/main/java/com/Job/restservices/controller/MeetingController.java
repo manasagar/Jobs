@@ -56,7 +56,7 @@ public class MeetingController {
     }
 
     @PostMapping("/finalise")
-    public ResponseEntity<?>finaliseMeet(@RequestBody Meeting meeting) throws Exception {
-        return ResponseEntity.ok(meetingService.finalise(meeting));
+    public ResponseEntity<?>finaliseMeet(@RequestBody Meeting meeting,Principal principal) throws Exception {
+        return ResponseEntity.ok(meetingService.finalise(meeting, principal.getName()));
     }
 }

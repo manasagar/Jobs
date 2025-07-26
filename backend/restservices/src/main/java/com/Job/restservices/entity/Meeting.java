@@ -7,17 +7,18 @@ import lombok.Data;
 import java.time.LocalDateTime;
 @Data
 @Entity
+@Table(name = "MEETING")
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "recruiter_id")
-    @JsonBackReference("recruiter-meeting")
     private Recruiter recruiter;
     String candidate;
     LocalDateTime time;
     boolean applied;
     int job;
+    String zoomLink;
 
 }

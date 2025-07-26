@@ -25,6 +25,10 @@ public class RecruiterController {
     RecruiterService recruiterService;
     @Autowired
     MeetingService meetingService;
+    @GetMapping(path="/self",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> self(Principal principal){
+        return ResponseEntity.ok(recruiterService.getSelf(principal));
+    }
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     public JobDetails addJob(@RequestBody JobDetails jobDetails,Principal principal) {
         return recruiterService.addJob(jobDetails, principal.getName());
@@ -55,7 +59,7 @@ public class RecruiterController {
                                     @RequestParam(defaultValue = "id") String sortBy)
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        return meetingService.get(jobId,pageable);
+        return meetingService.getMeetingByJob(jobId,pageable);
     }
     @GetMapping(path="/get_applications/{jobId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<JobApplications> getApplications(@PathVariable int jobId,

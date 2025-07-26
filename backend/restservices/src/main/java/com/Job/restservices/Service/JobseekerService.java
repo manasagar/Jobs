@@ -4,9 +4,11 @@ import com.Job.restservices.dto.JwtResponse;
 import com.Job.restservices.entity.JobApplications;
 import com.Job.restservices.entity.JobDetails;
 import com.Job.restservices.entity.Jobseeker;
+import com.Job.restservices.entity.Meeting;
 import com.Job.restservices.repository.JobApplicationsRepository;
 import com.Job.restservices.repository.JobDetailsRepository;
 import com.Job.restservices.repository.JobseekerRepository;
+import com.Job.restservices.repository.MeetingRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +34,15 @@ public class JobseekerService {
     JwtService jwtService;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    MeetingRepository meetingRepository;
 
-
+    public  Jobseeker getSelf(Principal principal){
+        return  jobseekerRepository.findById(principal.getName()).get();
+    }
+    public Page<Meeting> getMeeting(String userId,Pageable pageable){
+        return meetingRepository.findByCandidate(userId,pageable);
+    }
     public JwtResponse addJobseeker(Jobseeker jobseeker) throws Exception{
         if(jobseekerRepository.findById(jobseeker.getEmail()).isPresent())
             throw new BadRequestException("UserExists");

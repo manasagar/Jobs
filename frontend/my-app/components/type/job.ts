@@ -28,10 +28,10 @@ export interface Application {
 }
 
 export interface Meeting {
-  applicationId: number|null
-  candidateName: string|null
-  interviewerName: RegisterPayload|null 
-  datetime: string
+  job: number|null
+  candidate: string|null
+  recruiter: RegisterPayload|null 
+  time: string|null
   
 }
 

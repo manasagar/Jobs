@@ -25,8 +25,6 @@ public class Recruiter extends User {
     List<String> skills;
     @Column(name="linkedein_profile")
     String linkedein;
-    @OneToMany(mappedBy = "recruiter",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("recruiter-meeting")
-    List<Meeting> meetings;
+
 
 }
