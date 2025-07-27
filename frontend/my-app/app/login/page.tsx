@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Briefcase } from "lucide-react"
-import { useState } from "react"
-import { loginUser,LoginPayload } from "@/data/common"
+import { useEffect, useState } from "react"
+import { loginUser,LoginPayload, checkLogin } from "@/data/common"
 import { useRouter } from "next/navigation"
 import { DataLoader } from "@/data/common"
 import { checkRole } from "@/data/common"
@@ -36,6 +36,14 @@ export default   function  LoginPage()  {
     else
       router.push('/Jobmanagement');
   }
+  useEffect(()=>{
+    if(!checkLogin())
+      return;
+    if(checkRole()=='CANDIDATE')
+      router.push('/Jobsearch');
+    else
+      router.push('/Jobmanagement')
+  },[])
   return (
     <>
         {isDataLoading?<DataLoader/>:<br/>}

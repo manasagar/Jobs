@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 
 import { Label } from "@/components/ui/label"
@@ -10,12 +10,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Briefcase, Upload } from "lucide-react"
 import Candidate from "./candidate"
 import Recruiter from "./recruiter"
-
+import { checkLogin,checkRole } from "@/data/common"
+import { useRouter } from "next/navigation"
 type Role = "candidate" | "interviewer" |  ""
 
 export default function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState<Role>("")
-
+  const router=useRouter();
+  useEffect(()=>{
+   
+        if(!checkLogin())
+          return;
+        if(checkRole()=='CANDIDATE')
+          router.push('/Jobsearch');
+        else
+          router.push('/Jobmanagement')
+     
+  },[])
   const renderRoleSpecificFields = () => {
     switch (selectedRole) {
       case "candidate":
