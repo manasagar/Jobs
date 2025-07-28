@@ -54,7 +54,7 @@ export default function Recruiter(){
     }
    
     return (<>
-    {isDataLoading?<DataLoader/>:<br/>}
+     { isDataLoading?<DataLoader/>:<div>
      <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input id="email" type="email" placeholder="Enter your email" required value={email} onChange={(e)=>{setEmail(e.target.value)}} />
@@ -117,6 +117,7 @@ export default function Recruiter(){
               <Button type="submit" className="w-full" onClick={registerRecruiter}>
                 Create Account
               </Button>
+     </div>}
           </>
     )
 }

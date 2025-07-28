@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-
+import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 
+@Slf4j
 @Service
 public class ZoomTokenService {
     @Value("${zoom.client-id}")
@@ -34,6 +35,7 @@ public class ZoomTokenService {
                 .build();
 
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        log.info("hello {}",response.body());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readTree(response.body()).get("access_token").asText();
     }

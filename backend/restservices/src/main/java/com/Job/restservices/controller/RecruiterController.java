@@ -20,7 +20,6 @@ import java.security.Principal;
 @Slf4j
 @RestController
 @RequestMapping(value="/recruiter")
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class RecruiterController {
     @Autowired
     RecruiterService recruiterService;
