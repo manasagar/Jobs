@@ -74,7 +74,7 @@ catch(e){
 }
     return (
          <>
-         { isDataLoading?<DataLoader/>:<br/>}
+         { isDataLoading?<DataLoader/>:<div>
           <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <Input id="email" type="email" placeholder="Enter your email"
@@ -162,6 +162,7 @@ catch(e){
                 Create Account
               </Button>
             </div>
+            </div>}
           </>
     )
 }

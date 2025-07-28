@@ -24,7 +24,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(value="/jobseeker")
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class JobseekerController {
     @Autowired
     JobseekerService jobseekerService;

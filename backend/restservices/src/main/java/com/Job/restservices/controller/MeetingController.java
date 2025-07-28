@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping(value="/meeting")
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class MeetingController {
     @Autowired
     private MeetingService meetingService;

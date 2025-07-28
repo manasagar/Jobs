@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Data
-
 @Table(name = "job_applications")
 public class JobApplications {
     @Id
