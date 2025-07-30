@@ -53,12 +53,10 @@ const RegisterCandidate= async ()=>{
   try{
   if(resumeFile){
     setIsDataLoading(true);
-    try{
+    
   await registerUser(request,resumeFile)
-    }
-    catch(error){
-      console.log(error);
-    }
+   
+    
     setIsDataLoading(false);
     router.push("/Jobsearch");
   }

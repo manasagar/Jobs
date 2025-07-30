@@ -14,7 +14,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 
-import { Search} from "lucide-react"
+import { delay } from "@/data/common"
 import {ProfileButton} from "@/components/Job/profile-button"
 import { appliedJobList, applyJob, jobList, savedJobList, saveJob } from "@/data/urlJobseeker"
 import { jobApplied,jobSaved } from "@/components/styles/preMadeToasts"
@@ -72,11 +72,18 @@ const getAppliedJobs=async()=>{
 
 }
 
+   const checkRouting=async()=>{
+      
+      let x=await checkLogin();
   
+  await delay(2000) 
+      if(!x)
+        router.push('/');
+          
+    }
 
   useEffect(() => {
-    if(!checkLogin())
-      router.push('/')
+    checkRouting()
       
     if(activeTab=='all'){
         getJobs();

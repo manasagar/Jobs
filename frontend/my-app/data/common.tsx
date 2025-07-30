@@ -22,7 +22,7 @@ export const loginUser = async (payload: LoginPayload) => {
   });
 
   if (!res.ok) {console.log(res)
-    throw new Error('Login failed');}
+    throw console.log('Login failed');}
   const data= await res.json();
   const jwtResponse:JwtResponse=data as JwtResponse
    await SaveJwt(jwtResponse);
@@ -37,9 +37,17 @@ export const getMeetingList = async (job:number) => {
   });
 
   if (!res.ok) {console.log(res)
-    throw new Error('Meeting List');}
+    throw console.log('Meeting List');}
   return res.json();
 };
+export const getWelcome=async()=>{
+  const res = await fetch(`${BASE_URL}/user/welcome`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+   
+  });
+  return res.json();
+}
 export const logoutUser= async()=>{
   if(checkLogin())
     localStorage.removeItem('user');
@@ -70,6 +78,9 @@ export const extractToken=()=>{
     return user?user.jwtToken:undefined;
 
 }
+export  const delay = (ms:number) => new Promise(resolve => setTimeout(resolve, ms));
+
+ 
 export interface JobPayload{
   jobTitle:string;
   jobDescription:string;

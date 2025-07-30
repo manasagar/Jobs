@@ -10,22 +10,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Briefcase, Upload } from "lucide-react"
 import Candidate from "./candidate"
 import Recruiter from "./recruiter"
-import { checkLogin,checkRole } from "@/data/common"
+import { checkLogin,checkRole, getWelcome } from "@/data/common"
 import { useRouter } from "next/navigation"
 type Role = "candidate" | "interviewer" |  ""
-
+import { delay } from "@/data/common"
 export default function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState<Role>("")
   const router=useRouter();
-  useEffect(()=>{
-   
-        if(!checkLogin())
+
+  const checkRouting=async()=>{
+    
+    let x=await checkLogin();
+    let y=await checkRole();
+await delay(2000) 
+    if(!x)
           return;
-        if(checkRole()=='CANDIDATE')
+        if(y=='CANDIDATE')
           router.push('/Jobsearch');
         else
           router.push('/Jobmanagement')
-     
+  }
+  
+  useEffect(()=>{
+     checkRouting()
   },[])
   const renderRoleSpecificFields = () => {
     switch (selectedRole) {
