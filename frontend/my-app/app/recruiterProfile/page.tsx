@@ -17,6 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { delay } from "@/data/common"
 import { useRouter } from "next/navigation"
 import { checkLogin } from "@/data/common"
 import { DataLoader } from "@/data/common"
@@ -55,9 +56,17 @@ const getUser=async()=>{
     }
      setLoader(false);
 }
+ const checkRouting=async()=>{
+    
+    let x=await checkLogin();
+
+await delay(2000) 
+    if(!x)
+      router.push('/');
+        
+  }
 useEffect(()=>{
-    if(!checkLogin())
-        router.push('/');
+    checkRouting();
     getMeeting()
     getUser()
 },[currentPage])

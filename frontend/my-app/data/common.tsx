@@ -40,6 +40,14 @@ export const getMeetingList = async (job:number) => {
     throw console.log('Meeting List');}
   return res.json();
 };
+export const getWelcome=async()=>{
+  const res = await fetch(`${BASE_URL}/user/welcome`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+   
+  });
+  return res.json();
+}
 export const logoutUser= async()=>{
   if(checkLogin())
     localStorage.removeItem('user');
@@ -70,6 +78,9 @@ export const extractToken=()=>{
     return user?user.jwtToken:undefined;
 
 }
+export  const delay = (ms:number) => new Promise(resolve => setTimeout(resolve, ms));
+
+ 
 export interface JobPayload{
   jobTitle:string;
   jobDescription:string;

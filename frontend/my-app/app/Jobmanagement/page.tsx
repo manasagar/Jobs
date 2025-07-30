@@ -23,7 +23,7 @@ import {
 import JobDetails from "./jobDetails"
 import JobApplications from "./jobApplications"
 import { checkLogin } from "@/data/common"
-
+import { delay } from "@/data/common"
 
 export default function Component() {
   const router=useRouter();
@@ -31,10 +31,17 @@ export default function Component() {
   function changeApplication(id:any){
   setApplication(id);
   }
+  const checkRouting=async()=>{
+        
+        let x=await checkLogin();
+    
+    await delay(2000) 
+        if(!x)
+          router.push('/');
+            
+      }
   useEffect(()=>{
-    console.log("check")
-    if(!checkLogin())
-    router.push('/');
+    checkRouting();
   },[])
 
   return (

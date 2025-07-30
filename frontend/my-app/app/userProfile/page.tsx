@@ -7,6 +7,7 @@ import { Edit } from "lucide-react"
 import { useEffect ,useState} from "react"
 import {MeetingCard} from "./meetingCard"
 import { getMeetingByJobseeker ,getSelf } from "@/data/urlJobseeker"
+import { delay } from "@/data/common"
 import {
   Pagination,
   PaginationContent,
@@ -53,9 +54,17 @@ const getUser=async()=>{
     setLoader(false)
 
 }
+const checkRouting=async()=>{
+        
+        let x=await checkLogin();
+    
+    await delay(2000) 
+        if(!x)
+          router.push('/');
+            
+      }
 useEffect(()=>{
-  if(!checkLogin())
-    router.push('/')
+ checkRouting()
     getMeeting()
     getUser()
 },[currentPage])
