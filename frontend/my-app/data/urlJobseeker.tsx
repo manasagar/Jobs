@@ -16,7 +16,7 @@ export const jobList=async(page:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 export const savedJobList=async(page:number)=>{
@@ -24,7 +24,7 @@ export const savedJobList=async(page:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 export const appliedJobList=async(page:number)=>{
@@ -32,7 +32,7 @@ export const appliedJobList=async(page:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 export const saveJob=async(jobId:number)=>{
@@ -40,7 +40,7 @@ export const saveJob=async(jobId:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 export const applyJob=async(jobId:number)=>{
@@ -48,7 +48,7 @@ export const applyJob=async(jobId:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 
@@ -61,7 +61,7 @@ export const loginWelcome = async () => {
     
   });
 
-  if (!res.ok) throw new Error('Login failed');
+  if (!res.ok) console.log('Login failed');
   return res.json();
 };
   export const getSelf= async()=>{
@@ -69,7 +69,7 @@ export const loginWelcome = async () => {
       method:"GET",
       headers:{'Authorization': `Bearer ${extractToken()}`}
     })
-    if (!res.ok) throw new Error('no self');
+    if (!res.ok) console.log('no self');
     return res.json();
   }
   export const getMeetingByJobseeker = async(page:number)=>{
@@ -78,7 +78,7 @@ export const loginWelcome = async () => {
       headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
 
     })
-    if (!res.ok) throw new Error('Meeting Failed');
+    if (!res.ok) console.log('Meeting Failed');
   return res.json();
   }
   export const finaliseMeeting=async(meeting:any)=>{
@@ -87,7 +87,7 @@ export const loginWelcome = async () => {
       headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
     body: JSON.stringify(meeting),
   });
-   if (!res.ok) throw new Error('Meeting Failed');
+   if (!res.ok) console.log('Meeting Failed');
   return res.json();
 
 }
@@ -101,7 +101,7 @@ export const loginWelcome = async () => {
     });
     
 
-    if (!res.ok) throw new Error('Registration failed');
+    if (!res.ok) console.log('Registration failed');
     const data= await res.json();
     const jwtResponse:JwtResponse=data as JwtResponse
     await SaveJwt(jwtResponse);

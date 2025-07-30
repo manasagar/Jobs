@@ -22,7 +22,7 @@ export const loginUser = async (payload: LoginPayload) => {
   });
 
   if (!res.ok) {console.log(res)
-    throw new Error('Login failed');}
+    throw console.log('Login failed');}
   const data= await res.json();
   const jwtResponse:JwtResponse=data as JwtResponse
    await SaveJwt(jwtResponse);
@@ -37,7 +37,7 @@ export const getMeetingList = async (job:number) => {
   });
 
   if (!res.ok) {console.log(res)
-    throw new Error('Meeting List');}
+    throw console.log('Meeting List');}
   return res.json();
 };
 export const logoutUser= async()=>{

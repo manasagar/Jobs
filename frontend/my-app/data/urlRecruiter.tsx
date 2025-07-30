@@ -21,7 +21,7 @@ export const getSelf= async()=>{
       method:"GET",
       headers:{'Authorization': `Bearer ${extractToken()}`}
     })
-    if (!res.ok) throw new Error('no self');
+    if (!res.ok) console.log('no self');
     return res.json();
   }
 export const jobList=async(page:number)=>{
@@ -29,7 +29,7 @@ export const jobList=async(page:number)=>{
     method: 'GET',
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if (!res.ok) throw new Error('could not get JobList');
+  if (!res.ok) console.log('could not get JobList');
   return res.json();
 }
 export const loginUser = async (payload: LoginPayload) => {
@@ -39,7 +39,7 @@ export const loginUser = async (payload: LoginPayload) => {
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) throw new Error('Login failed');
+  if (!res.ok) console.log('Login failed');
   return res.json();
 };
 export const createNewJob= async(payload:JobPayload)=>{
@@ -48,7 +48,7 @@ export const createNewJob= async(payload:JobPayload)=>{
     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
     body: JSON.stringify(payload),
   });
-  if(!res.ok) throw new Error('Creation Failed');
+  if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
 export const registerUser = async (payload: RegisterPayload) => {
@@ -59,7 +59,7 @@ export const registerUser = async (payload: RegisterPayload) => {
   });
   
  
-  if (!res.ok) throw new Error('Registration failed');
+  // if (!res.ok) console.log('Registration failed');
       const data= await res.json();
       const jwtResponse:JwtResponse=data as JwtResponse
       await SaveJwt(jwtResponse);
@@ -72,7 +72,7 @@ export const getApplicationByJob=async(jobId:number,page:number)=>{
     method:'GET',
      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if(!res.ok) throw new Error('Creation Failed');
+  if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
 
@@ -81,7 +81,7 @@ export const getMeetingByJob=async(jobId:number,page:number)=>{
     method:'GET',
      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
   });
-  if(!res.ok) throw new Error('Creation Failed');
+  if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
 
@@ -91,7 +91,7 @@ export const addMeeting=async(payload:any)=>{
      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
       body: JSON.stringify(payload)
   });
-  if(!res.ok) throw new Error('Creation Failed');
+  if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
 export const selection=async(meeting:any,note:string,status:string,application:number)=>{
@@ -100,7 +100,7 @@ export const selection=async(meeting:any,note:string,status:string,application:n
      headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
       body: JSON.stringify(meeting)
   });
-  if(!res.ok) throw new Error('Creation Failed');
+  if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
 export const getMeetingByRecruiter = async(page:number)=>{
@@ -109,6 +109,6 @@ export const getMeetingByRecruiter = async(page:number)=>{
       headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
 
     })
-    if (!res.ok) throw new Error('Meeting Failed');
+    if (!res.ok) console.log('Meeting Failed');
   return res.json();
   }

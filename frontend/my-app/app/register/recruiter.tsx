@@ -43,12 +43,9 @@ export default function Recruiter(){
         companyName:company
       }
       setIsDataLoading(true);
-      try{
+     
       await registerUser(request);
-      }
-      catch(error){
-        console.log(error);
-      }
+     
       setIsDataLoading(false);
       router.push("/Jobmanagement");
     }
