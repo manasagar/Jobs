@@ -22,6 +22,7 @@ export default function RegisterPage() {
     
     let x=await checkLogin();
     let y=await checkRole();
+     await getWelcome();  
 await delay(2000) 
     if(!x)
           return;
