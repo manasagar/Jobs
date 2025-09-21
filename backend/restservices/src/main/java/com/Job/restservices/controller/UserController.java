@@ -2,8 +2,10 @@ package com.Job.restservices.controller;
 
 import com.Job.restservices.dto.JwtResponse;
 import com.Job.restservices.service.JwtService;
+import com.Job.restservices.service.ScheduleService;
 import com.Job.restservices.service.UserService;
 import com.Job.restservices.entity.User;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -23,14 +26,17 @@ public class UserController {
     @Autowired
     UserService userService;
     @Autowired
+    private  Scheduler scheduler;
+    @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
     JwtService jwtService;
     @GetMapping("/welcome")
-
-    public String welcome() {
+    public String welcome()  {
+        userService.tr();
         return "Welcome this endpoint is not secure";
     }
+
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> Register(@RequestBody User user) throws Exception{
              userService.register(user);

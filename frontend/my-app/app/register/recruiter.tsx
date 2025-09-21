@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Plus, X } from "lucide-react"
 import { registerUser,RegisterPayload} from "@/data/urlRecruiter"
 import { DataLoader } from "@/data/common"
+import { ca } from "date-fns/locale"
 export default function Recruiter(){
   const [isDataLoading, setIsDataLoading] = useState(false);
   const [name, setName] = useState("");
@@ -43,9 +44,12 @@ export default function Recruiter(){
         companyName:company
       }
       setIsDataLoading(true);
-     
+     try{
       await registerUser(request);
-     
+     }
+     catch(e){
+      console.log(e);
+     }
       setIsDataLoading(false);
       router.push("/Jobmanagement");
     }

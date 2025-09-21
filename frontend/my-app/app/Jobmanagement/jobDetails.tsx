@@ -77,7 +77,7 @@ return(<>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Job Title</TableHead>
-                      <TableHead>Department</TableHead>
+                     
                       <TableHead>Location</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Deadline</TableHead>
@@ -96,7 +96,7 @@ return(<>
                             {/* <p className="text-sm text-gray-500"></p> */}
                           </div>
                         </TableCell>
-                        <TableCell>{job.jobDescription}</TableCell>
+                      
                         <TableCell>{job.location}</TableCell>
                        
                         <TableCell>

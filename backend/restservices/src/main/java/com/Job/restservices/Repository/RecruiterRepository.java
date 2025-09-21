@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface RecruiterRepository extends JpaRepository<Recruiter,String> {
-    @Query(value = "select * from JOBS where stipend >= ?1 AND company_name like ?2 ",nativeQuery = true)
+    @Query(value = "SELECT * FROM jobs WHERE STIPEND >= ?1 AND COMPANY_NAME LIKE ?2 ",nativeQuery = true)
     public List<JobDetails> getUsers(Integer stipend,String companyName,Recruiter recruiter);
 
 }

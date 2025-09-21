@@ -20,7 +20,7 @@ public class JobDetails {
     private int id;
     @Column(name="job_title")
     private String  jobTitle;
-    @Column(name="job_description")
+    @Column(name="job_description",columnDefinition = "TEXT")
     private String jobDescription;
     @Column(name="skills")
     private String skills;

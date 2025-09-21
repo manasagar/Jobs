@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "USERS")
+@Table(name = "users")
 @Component
 public  class User {
     @Id

@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface JobDetailsRepository extends JpaRepository<JobDetails,Integer> {
     Optional<JobDetails> findById(int user_id);
-    @Query(nativeQuery = true,value="select * from job ")
+    @Query(nativeQuery = true,value="SELECT * FROM job ")
     public Page<JobDetails> findFilteredJobs(  Pageable pageable);
-    @Query(nativeQuery = true,value="select * from job where recruiter_id=?1")
+    @Query(nativeQuery = true,value="SELECT * FROM job WHERE RECRUITER_ID=?1")
     public Page<JobDetails>findByRecruiter(String recruiter,Pageable pageable);
 }

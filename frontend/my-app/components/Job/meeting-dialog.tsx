@@ -17,6 +17,7 @@ import { meetingCreated,prettyDate } from "../styles/preMadeToasts"
 import {getMeetingList}from "@/data/common"
 import { finaliseMeeting } from "@/data/urlJobseeker"
 import { DataLoader } from "@/data/common"
+import { DialogClose } from "@radix-ui/react-dialog"
 interface MeetingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -65,9 +66,11 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
     catch(error){
         console.log(error)
     }
+    finally{
     meetingCreated(slot.time);
     setLoader(false)
      onOpenChange(false)
+    }
  }
 
   if (!application) return null
@@ -99,10 +102,13 @@ export function GetMeetingDialog({ open, onOpenChange, application }: MeetingDia
             ))}
           </div>
           <DialogFooter>
+            
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
+           
             <Button type="submit" onClick={() => onSubmit()}>Schedule Meeting</Button>
+           
           </DialogFooter>
        
       </DialogContent>

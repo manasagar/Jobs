@@ -11,13 +11,16 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
@@ -27,16 +30,15 @@ import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 @Slf4j
 @Service
 public class MeetingService {
+    @Autowired
+    private Scheduler scheduler;
     @Autowired
     ZoomTokenService zoomTokenService;
     @Autowired
@@ -49,10 +51,23 @@ public class MeetingService {
     private MeetingRepository meetingRepository;
     @Autowired
     private JobDetailsRepository jobDetailsRepository;
+    @Value("${spring.server}")
+    private  String url;
+    private final RestTemplate restTemplate = new RestTemplate();
     @Scheduled(cron = "0 14 13 * * ?", zone = "Asia/Kolkata")
     private void runDailyJob() {
         log.info("Deleting old meetings");
         meetingRepository.removeUselessMeet();
+    }
+    @Scheduled(fixedRate = 5*60*1000)
+    public void ping(){
+        try{
+            String surl=url+"/user/welcome";
+            String response = restTemplate.getForObject(surl, String.class);
+            System.out.println("Self-ping response: " + response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -157,8 +172,22 @@ public class MeetingService {
             meeting2.setCandidate(meeting.getCandidate());
             meeting2.setZoomLink(link);
             meeting2.setTime(meeting1.getTime());
-            meetingRepository.save(meeting2);
 
+            meetingRepository.save(meeting2);
+            JobDetail jobDetail = JobBuilder.newJob(ScheduleService.class)
+                    .withIdentity("meetingJob-" +meeting2.getZoomLink(), "meetings")
+                    .usingJobData("recruiter", recruiter.getEmail())
+                    .usingJobData("jobseeker",candidate)
+                    .build();
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity("meetingTrigger-" + meeting1.getZoomLink(), "meetings") // unique name in "meetings" group
+                    .startAt(Date.from(utcDateTime.minusHours(1).toInstant(ZoneOffset.UTC)))         // start 1 hour before utcDateTime
+                    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                            .withMisfireHandlingInstructionFireNow())                  // if missed, fire immediately
+                    .build();
+
+
+            scheduler.scheduleJob(jobDetail, trigger);
             JobApplications jobApplications=jobApplicationsRepository.findByJobAndJobseeker(meeting.getCandidate(), meeting.getJob()).get();
 
 

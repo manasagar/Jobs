@@ -154,7 +154,9 @@ export function AddJob({ onSubmit }: { onSubmit: () => void }) {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
+            <DialogClose asChild>
             <Button type="submit" onClick={createJob}>Save changes</Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </form>

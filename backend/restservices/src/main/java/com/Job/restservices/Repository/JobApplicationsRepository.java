@@ -13,14 +13,14 @@ import java.util.Optional;
 @Repository
 public interface JobApplicationsRepository extends JpaRepository<JobApplications,Integer> {
 
-    @Query(nativeQuery = true,value="select * from job_applications where job_id=?1 and application_status is not NULL AND application_status != 'Rejected'  ")
+    @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOB_ID=?1 AND APPLICATION_STATUS IS NOT NULL AND APPLICATION_STATUS != 'Rejected'  ")
     public Page<JobApplications> findByJob(int job,Pageable pageable);
-    @Query(nativeQuery = true,value="select * from job_applications where jobseeker_id=?1 and job_id=?2 ")
+    @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOBSEEKER_ID=?1 AND JOB_ID=?2 ")
     public Optional<JobApplications> findByJobAndJobseeker(String  jobseekerId,int jobDetailsId);
-    @Query(nativeQuery = true,value="select * from job_applications where jobseeker_id=?1  and is_saved = true")
+    @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOBSEEKER_ID=?1  AND IS_SAVED = true")
     public Page<JobApplications> findByJobAndJobseekerAndSaved(String  jobseekerId,Pageable pageable);
-    @Query(nativeQuery = true,value="select * from job_applications where jobseeker_id=?1  and application_status is not NULL ")
+    @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOBSEEKER_ID=?1  AND APPLICATION_STATUS IS NOT NULL ")
     public Page<JobApplications> findByJobAndJobseekerAndApplied(String  jobseekerId,Pageable pageable);
-    @Query(nativeQuery = true,value="select * from job_applications where job_id=?1  and application_status is not NULL ")
+    @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOB_ID=?1  AND APPLICATION_STATUS IS NOT NULL ")
     public Page<JobApplications> findByJob(String jobId,Pageable pageable);
 }
