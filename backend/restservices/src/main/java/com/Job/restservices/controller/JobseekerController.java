@@ -67,8 +67,7 @@ public class JobseekerController {
     }
     @GetMapping(path="/applyJob",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> applyJob(@RequestParam(required = true) int jobId,
-                                      Principal principal)
-    {
+                                      Principal principal) throws Exception {
 
         return ResponseEntity.ok(jobseekerService.addJobApplication(principal.getName(),jobId));
     }

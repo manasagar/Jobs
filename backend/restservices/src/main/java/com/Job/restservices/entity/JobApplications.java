@@ -34,7 +34,11 @@ public class JobApplications {
     private LocalDate appliedOn;
     @Column(name = "recruiter_application_status")
     private String recruiterApplicationStatus;
+    @Column(name="score")
+    private Double score;
+
     public boolean getSaved(){
         return saved;
     }
+
 }

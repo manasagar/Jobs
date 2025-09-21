@@ -30,8 +30,8 @@ public class RecruiterController {
         return ResponseEntity.ok(recruiterService.getSelf(principal));
     }
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public JobDetails addJob(@RequestBody JobDetails jobDetails,Principal principal) {
-        return recruiterService.addJob(jobDetails, principal.getName());
+    public ResponseEntity<?> addJob(@RequestBody JobDetails jobDetails,Principal principal) {
+        return ResponseEntity.ok(recruiterService.addJob(jobDetails, principal.getName()));
     }
     @PostMapping(path ="/register",consumes =MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addRecruiter(@RequestBody  Recruiter recruiter) throws Exception{

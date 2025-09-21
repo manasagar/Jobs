@@ -51,7 +51,7 @@ public class JobseekerService {
     public Page<JobApplications> appliedJobs(String jobseekerId,Pageable pageable){
         return jobApplicationsRepository.findByJobAndJobseekerAndApplied(jobseekerId,pageable);
     }
-    public JobApplications addJobApplication(String jobseekerId, int jobId){
+    public JobApplications addJobApplication(String jobseekerId, int jobId) throws Exception {
         Jobseeker jobseeker = jobseekerRepository.findById(jobseekerId).get();
         JobDetails jobDetails=jobDetailsRepository.findById(jobId).get();
         JobApplications jobApplications= new JobApplications();
@@ -68,6 +68,8 @@ public class JobseekerService {
             jobApplications.setApplicationStatus(Status.applied);
             jobApplications.setAppliedOn(LocalDate.now());
         }
+        Double score=AtsService.calculateATSScore(jobseeker.getResume(),jobDetails.getJobDescription());
+        jobApplications.setScore(score);
         return jobApplicationsRepository.save(jobApplications);
     }
     public JobApplications saveJobApplication(String jobseekerId, int jobId) throws Exception{

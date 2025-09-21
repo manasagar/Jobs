@@ -49,16 +49,11 @@ const RegisterCandidate= async ()=>{
     role:"CANDIDATE",
     skills:skills
   }
-  
+   setIsDataLoading(true);
   try{
   if(resumeFile){
-    setIsDataLoading(true);
-    
   await registerUser(request,resumeFile)
-   
-    
-    setIsDataLoading(false);
-    router.push("/Jobsearch");
+
   }
   else{
     // notify
@@ -67,7 +62,8 @@ const RegisterCandidate= async ()=>{
 catch(e){
     console.log(e)
 }
-  
+  router.push("/Jobsearch");
+   setIsDataLoading(false);
  
 }
     return (

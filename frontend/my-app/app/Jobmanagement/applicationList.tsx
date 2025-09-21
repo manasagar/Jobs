@@ -137,6 +137,10 @@ useEffect(()=>{
               {app.jobseeker.email}
             </a>
           </div>
+          <div >
+             <h4 className="text-sm font-medium mb-2">resume score</h4>
+            {app.score.toFixed(2)}
+          </div>
 
 
         </div>
