@@ -67,7 +67,7 @@ await delay(2000)
               <Briefcase className="h-6 w-6 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Join CareerHub</CardTitle>
+          <CardTitle className="text-2xl font-bold">Join JobsToday</CardTitle>
           <CardDescription>Create your account and start your career journey</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
