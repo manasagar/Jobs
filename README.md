@@ -7,6 +7,7 @@ It provides a seamless experience for candidates and recruiters with secure auth
 1. [How it Works](#How-it-Works)
 2. [Features](#Features)
 3. [Run Locally](#Run-Locally)
+4. [Demo](#Demo)
 
 
 ## How it Works
@@ -49,4 +50,8 @@ Start frontend
 cd frontend/my-app
 npm install
 npm start
+```
+## Demo
+https://www.youtube.com/watch?v=BA5oAzJL3zM
+
 ```
