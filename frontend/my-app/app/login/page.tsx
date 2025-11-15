@@ -56,7 +56,7 @@ export default   function  LoginPage()  {
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your CareerHub account</CardDescription>
+          <CardDescription>Sign in to your JobsToday account</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
