@@ -2,6 +2,7 @@ package com.Job.restservices.controller;
 
 import com.Job.restservices.dto.JwtResponse;
 import com.Job.restservices.service.JwtService;
+import com.Job.restservices.service.ResumeService;
 import com.Job.restservices.service.ScheduleService;
 import com.Job.restservices.service.UserService;
 import com.Job.restservices.entity.User;
@@ -14,7 +15,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Objects;
@@ -31,10 +34,19 @@ public class UserController {
     AuthenticationManager authenticationManager;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    ResumeService resumeService;
     @GetMapping("/welcome")
     public String welcome()  {
         userService.tr();
         return "Welcome this endpoint is not secure";
+    }
+    @PostMapping(path = "/resume",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadResume(@RequestParam("resume") MultipartFile resume) throws Exception {
+       // jobseekerService.updateResume(principal.getName(),resume.getBytes());
+        resumeService.updateResume(resume.getBytes());
+        return ResponseEntity.ok("done");
+        //return
     }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
