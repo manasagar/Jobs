@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Jobseeker extends User{
     @Lob
-    @Column(length = 5242880) // optional: limit to 5MB
+    @Column(length = 5242880)
     private byte[] resume;
     @Column(name="specialisation")
     List<String> skills;

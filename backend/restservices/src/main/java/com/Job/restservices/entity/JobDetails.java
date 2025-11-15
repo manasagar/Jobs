@@ -11,8 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-            @Data
-
+@Data
 @Table(name="JOB")
 public class JobDetails {
     @Id

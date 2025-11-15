@@ -13,7 +13,7 @@ export default function HomePage() {
               <Briefcase className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to CareerHub</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to JobsToday</h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Connect talented candidates with top companies through our comprehensive career platform
           </p>
