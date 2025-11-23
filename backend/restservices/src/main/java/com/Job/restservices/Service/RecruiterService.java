@@ -3,6 +3,7 @@ package com.Job.restservices.service;
 import com.Job.restservices.dto.JwtResponse;
 import com.Job.restservices.entity.*;
 import com.Job.restservices.repository.*;
+import io.qdrant.client.QdrantClient;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,6 +35,8 @@ public class RecruiterService {
     MeetingRepository meetingRepository;
     @Autowired
     MeetingService meetingService;
+    @Autowired
+    ResumeService resumeService;
     public Recruiter getSelf(Principal principal){
         return recruiterRepository.findById(principal.getName()).get();
     }
@@ -40,10 +45,14 @@ public class RecruiterService {
             recruiterRepository.save(recruiter);
             return new JwtResponse(jwtService.generateToken(recruiter.getEmail()),new Date(),recruiter.getRole().toString());
         }
-        public JobDetails addJob(JobDetails jobDetails,  String recruiterId){
+        public JobDetails addJob(JobDetails jobDetails,  String recruiterId) throws ExecutionException, InterruptedException {
             Recruiter recruiter=recruiterRepository.findById(recruiterId).get();
+
             jobDetails.setRecruiter(recruiter);
-           return jobDetailsRepository.save(jobDetails);
+            JobDetails job=jobDetailsRepository.save(jobDetails);
+            resumeService.addJob(job.getJobDescription(), (long) job.getId());
+            resumeService.createVectorStore(String.valueOf(job.getId()));
+           return job;
         }
         public List<JobDetails> getJobs(String recruiterId){
            return recruiterRepository.findById(recruiterId).get().getJobs();

@@ -6,6 +6,8 @@ import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.sentdetect.SentenceDetectorME;
+import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +42,11 @@ public class NLPConfig {
     public TokenizerME tokenizerModel() throws IOException{
         return new TokenizerME(new TokenizerModel(
                     getClass().getResourceAsStream("/models/opennlp-en-ud-ewt-tokens-1.3-2.5.4.bin")));
+    }
+    @Bean
+    public SentenceDetectorME sentenceModel() throws IOException {
+        return new SentenceDetectorME(new SentenceModel(
+                getClass().getResourceAsStream("/models/opennlp-en-ud-ewt-sentence-1.3-2.5.4.bin")));
     }
 
 }

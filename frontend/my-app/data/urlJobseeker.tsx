@@ -1,3 +1,4 @@
+
 import { JwtResponse, SaveJwt,extractToken ,BASE_URL,JobPayload} from "./common";
 
 
@@ -110,7 +111,14 @@ export const loginWelcome = async () => {
 
     return res.json();
   };
-
+export const aiJobs=async (query:string)=>{
+  const res=await fetch(`${BASE_URL}/jobseeker/query`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization': `Bearer ${extractToken()}`},
+    body:JSON.stringify(query),
+  });
+  return res.json();
+}
 export const uploadResume = async (resume :File)=>{
   const formData = new FormData();
   formData.append('resume',resume);

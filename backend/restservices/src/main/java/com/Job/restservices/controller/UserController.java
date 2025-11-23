@@ -1,10 +1,7 @@
 package com.Job.restservices.controller;
 
 import com.Job.restservices.dto.JwtResponse;
-import com.Job.restservices.service.JwtService;
-import com.Job.restservices.service.ResumeService;
-import com.Job.restservices.service.ScheduleService;
-import com.Job.restservices.service.UserService;
+import com.Job.restservices.service.*;
 import com.Job.restservices.entity.User;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +33,22 @@ public class UserController {
     JwtService jwtService;
     @Autowired
     ResumeService resumeService;
+    @Autowired
+    EmbeddingService embeddingService;
     @GetMapping("/welcome")
     public String welcome()  {
         userService.tr();
         return "Welcome this endpoint is not secure";
     }
-    @PostMapping(path = "/resume",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadResume(@RequestParam("resume") MultipartFile resume) throws Exception {
-       // jobseekerService.updateResume(principal.getName(),resume.getBytes());
-        resumeService.updateResume(resume.getBytes());
-        return ResponseEntity.ok("done");
-        //return
-    }
+//    @PostMapping(path = "/resume",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> uploadResume(@RequestParam("resume") MultipartFile resume) throws Exception {
+//        resumeService.updateResume(resume.getBytes());
+//        return ResponseEntity.ok("done");
+//    }
+//    @PostMapping(path = "/embeddings",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<?> uploadResume(@RequestBody String text) throws Exception {
+//        return ResponseEntity.ok(resumeService.query(text));
+//    }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> Register(@RequestBody User user) throws Exception{

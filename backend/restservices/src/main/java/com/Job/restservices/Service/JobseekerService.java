@@ -31,6 +31,10 @@ public class JobseekerService {
     PasswordEncoder passwordEncoder;
     @Autowired
     MeetingRepository meetingRepository;
+    @Autowired
+    ResumeService resumeService;
+    @Autowired
+    ParseResume parseResume;
 
     public  Jobseeker getSelf(Principal principal){
         return  jobseekerRepository.findById(principal.getName()).get();
@@ -70,7 +74,9 @@ public class JobseekerService {
         }
         Double score=AtsService.calculateATSScore(jobseeker.getResume(),jobDetails.getJobDescription());
         jobApplications.setScore(score);
-        return jobApplicationsRepository.save(jobApplications);
+        jobApplications=jobApplicationsRepository.save(jobApplications);
+        resumeService.updateResume(jobApplications.getJobseeker().getResumeDetails().getContent(),jobApplications.getId(), String.valueOf(jobApplications.getJob().getId()));
+        return jobApplications;
     }
     public JobApplications saveJobApplication(String jobseekerId, int jobId) throws Exception{
         Jobseeker jobseeker = jobseekerRepository.findById(jobseekerId).get();
@@ -105,6 +111,7 @@ public class JobseekerService {
     public void updateResume(String jobseekerName,byte[] resume) throws  Exception{
         Jobseeker jobseeker=jobseekerRepository.findById(jobseekerName).get();
         jobseeker.setResume(resume);
+        jobseeker.setResumeDetails(parseResume.parse(resume));
         jobseekerRepository.save(jobseeker);
 
     }

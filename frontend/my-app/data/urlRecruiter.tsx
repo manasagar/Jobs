@@ -103,6 +103,15 @@ export const selection=async(meeting:any,note:string,status:string,application:n
   if(!res.ok) console.log('Creation Failed');
   return res.json();
 }
+export const aiQuery=async(jobId:number,query:string)=>{
+  const res=await fetch(`${BASE_URL}/recruiter/query?jobId=${jobId}`,{
+    method:'POST',
+     headers: { 'Content-Type': 'application/json' ,'Authorization': `Bearer ${extractToken()}`},
+      body: JSON.stringify(query)
+  });
+  if(!res.ok) console.log('Creation Failed');
+  return res.json();
+}
 export const getMeetingByRecruiter = async(page:number)=>{
     const res = await fetch(`${BASE_URL}/recruiter/meeting?page=${page}`, {
       method:'GET',

@@ -51,7 +51,7 @@ public class SecurityConfig  {
         return http.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/user/register","/user/login","/jobseeker/register","/recruiter/register","/user/welcome","/user/resume").permitAll()
+                .requestMatchers("/user/register","/user/login","/jobseeker/register","/recruiter/register","/user/welcome","/user/resume","/user/embeddings").permitAll()
                 .requestMatchers("/**")
                 .authenticated().and()
                 .sessionManagement()

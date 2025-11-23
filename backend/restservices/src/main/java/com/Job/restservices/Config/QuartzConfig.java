@@ -11,7 +11,6 @@ public class QuartzConfig {
 
     @Bean
     public Scheduler scheduler() throws Exception {
-
         return scheduler;
     }
 

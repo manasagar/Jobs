@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowLeft } from 'lucide-react';
 import ApplicationList from "./applicationList"
 import MeetingList from "./meeting"
+import AImode from "./AImode";
 export default function JobApplications({application,changeApplication}:{application:number,changeApplication : (id:any) => void}){
 const [activeTab, setActiveTab] = useState('application');
  
@@ -26,11 +27,17 @@ const [activeTab, setActiveTab] = useState('application');
         >
           Meetings
         </button>
+         <button
+          className={`px-4 py-2 ${activeTab === 'aimode' ? 'border-b-2 border-blue-500 font-semibold' : 'text-gray-500'}`}
+          onClick={() => setActiveTab('aimode')}
+        >
+          AImode
+        </button>
       </div>
       <div className="mt-4">
        {'application'===activeTab&&<ApplicationList jobId={application} />}
        {'meetings'===activeTab&&<MeetingList  jobId={application}/>}
-       {/* <ApplicationList jobId={application} isActive={'application'===activeTab}/> */}
+       {'aimode'===activeTab&&<AImode jobId={application}/>}
         {/* {activeTab === 'application'?<ApplicationList jobId={application} isActive={'application'===activeTab}/>:<MeetingList jobId={application} isActive={'meetings'===activeTab}/>} */}
       </div>
 

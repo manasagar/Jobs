@@ -3,6 +3,7 @@ package com.Job.restservices.controller;
 import com.Job.restservices.entity.*;
 import com.Job.restservices.service.MeetingService;
 import com.Job.restservices.service.RecruiterService;
+import com.Job.restservices.service.ResumeService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -14,13 +15,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
 @RequestMapping(value="/recruiter")
 public class RecruiterController {
+    @Autowired
+    ResumeService resumeService;
     @Autowired
     RecruiterService recruiterService;
     @Autowired
@@ -30,7 +35,7 @@ public class RecruiterController {
         return ResponseEntity.ok(recruiterService.getSelf(principal));
     }
     @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addJob(@RequestBody JobDetails jobDetails,Principal principal) {
+    public ResponseEntity<?> addJob(@RequestBody JobDetails jobDetails,Principal principal) throws ExecutionException, InterruptedException {
         return ResponseEntity.ok(recruiterService.addJob(jobDetails, principal.getName()));
     }
     @PostMapping(path ="/register",consumes =MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
@@ -73,6 +78,11 @@ public class RecruiterController {
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return meetingService.getMeetingByJob(jobId,pageable);
+    }
+    @PostMapping(path = "/query",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getApplications(@RequestBody String text,@RequestParam int jobId) throws Exception {
+        log.info("jobId {}",jobId);
+        return ResponseEntity.ok(resumeService.queryApplications(text, String.valueOf(jobId)));
     }
     @GetMapping(path="/get_applications/{jobId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public Page<JobApplications> getApplications(@PathVariable int jobId,

@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 import {
   Pagination,
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/pagination"
 import { getMeetingByJob } from "@/data/urlRecruiter"
 import { useEffect ,useState} from "react"
-import { Clock, Calendar, FileText } from "lucide-react"
+import { Clock, Calendar} from "lucide-react"
 import { DataLoader } from "@/data/common"
 import { Badge } from "lucide-react"
 export default function MeetingList({jobId}:{jobId:number}){

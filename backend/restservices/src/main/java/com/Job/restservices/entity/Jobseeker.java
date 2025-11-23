@@ -16,6 +16,10 @@ public class Jobseeker extends User{
     @Lob
     @Column(length = 5242880)
     private byte[] resume;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "resume_id")
+    private Resume resumeDetails;
     @Column(name="specialisation")
     List<String> skills;
 

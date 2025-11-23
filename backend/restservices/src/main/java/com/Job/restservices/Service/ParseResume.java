@@ -1,6 +1,7 @@
 package com.Job.restservices.service;
 
 import com.Job.restservices.entity.Resume;
+import io.qdrant.client.QdrantClient;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.postag.POSTaggerME;
@@ -26,6 +27,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class ParseResume {
     @Autowired
@@ -41,6 +44,7 @@ public class ParseResume {
     @Autowired
     @Qualifier("location")
     NameFinderME locationFinder;
+
     @Autowired
     POSTaggerME posTagger;
     private List<String> extractOrganizations(String[] tokens) {
@@ -99,6 +103,7 @@ public class ParseResume {
         InputStream stream = new ByteArrayInputStream(res);
         parser.parse(stream,handler,metadata);
         String resumeText = handler.toString();
+        resume.setContent(resumeText);
         String[] tokens=tokenise(resumeText);
         String[] pos = posTagger.tag(tokens);
         String[] chunks = chunker.chunk(tokens, pos);
@@ -109,4 +114,5 @@ public class ParseResume {
         return resume;
 
     }
+
 }

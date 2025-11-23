@@ -5,6 +5,7 @@ import com.Job.restservices.entity.JobDetails;
 import com.Job.restservices.entity.Jobseeker;
 import com.Job.restservices.entity.User;
 import com.Job.restservices.service.JobseekerService;
+import com.Job.restservices.service.ResumeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -27,6 +29,8 @@ import java.util.List;
 public class JobseekerController {
     @Autowired
     JobseekerService jobseekerService;
+    @Autowired
+    ResumeService resumeService;
     @GetMapping(path="/self",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> self(Principal principal){
         return ResponseEntity.ok(jobseekerService.getSelf(principal));
@@ -83,6 +87,10 @@ public class JobseekerController {
     {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
         return jobseekerService.savedJobs(principal.getName(),pageable);
+    }
+    @PostMapping(path="/query",produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<JobDetails> getJobs(@RequestBody String text) throws ExecutionException, InterruptedException {
+        return resumeService.queryJobs(text);
     }
     @GetMapping(path="/appliedJobs",produces = MediaType.APPLICATION_JSON_VALUE)
     public  Page<JobApplications> getAppliedJobs(@RequestParam(defaultValue = "0") int page,

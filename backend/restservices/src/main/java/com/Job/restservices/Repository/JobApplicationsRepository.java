@@ -2,12 +2,15 @@ package com.Job.restservices.repository;
 
 import com.Job.restservices.entity.JobApplications;
 import com.Job.restservices.entity.JobDetails;
+import com.Job.restservices.entity.Resume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +26,6 @@ public interface JobApplicationsRepository extends JpaRepository<JobApplications
     public Page<JobApplications> findByJobAndJobseekerAndApplied(String  jobseekerId,Pageable pageable);
     @Query(nativeQuery = true,value="SELECT * FROM job_applications WHERE JOB_ID=?1  AND APPLICATION_STATUS IS NOT NULL ")
     public Page<JobApplications> findByJob(String jobId,Pageable pageable);
+    @Query(value = "SELECT * FROM job_applications where id in (:ids)",nativeQuery = true)
+    public List<JobApplications> getApplications(@Param("ids") List<Long> ids);
 }

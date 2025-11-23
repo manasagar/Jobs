@@ -27,5 +27,7 @@ public class Resume {
     @Column(name="skills",columnDefinition = "JSON")
     @Convert(converter = StringListConverter.class)
     public List<String> skills;
+    @Column(name="content",columnDefinition = "Text")
+    public String content;
 
 }

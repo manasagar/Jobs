@@ -52,15 +52,37 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 <!--		<dependency>-->
-<!--			<groupId>com.google.ai.client</groupId>-->
-<!--			<artifactId>genai</artifactId>-->
-<!--			<version>0.5.0</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
 <!--			<groupId>io.qdrant</groupId>-->
 <!--			<artifactId>qdrant-client</artifactId>-->
 <!--			<version>1.13.0</version>-->
 <!--		</dependency>-->
+		<!--		<dependency>-->
+<!--			<groupId>com.google.ai.client</groupId>-->
+<!--			<artifactId>genai</artifactId>-->
+<!--			<version>0.5.0</version>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>io.qdrant</groupId>
+			<artifactId>client</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty-shaded</artifactId>
+			<version>1.63.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.63.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.63.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.mysql</groupId>

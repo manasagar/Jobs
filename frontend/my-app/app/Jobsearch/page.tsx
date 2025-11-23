@@ -3,8 +3,8 @@
 import { useState,  useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
 import {
   Pagination,
   PaginationContent,
@@ -109,10 +109,12 @@ const getAppliedJobs=async()=>{
   }
 
   const handlePageChange = (page: number) => {
-    console.log(page)
+    
     setCurrentPage(page)
   }
- 
+ const toAIMode =()=>{
+    router.push('/JobsearchAiMode');
+ }
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
  
@@ -133,7 +135,11 @@ const getAppliedJobs=async()=>{
          
         </div>
       </div>
-
+      
+        <Button size="sm" onClick={toAIMode} >
+          Chat with AI
+        </Button>
+      
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
