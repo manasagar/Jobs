@@ -53,4 +53,5 @@ npm start
 ```
 ## Demo
 https://www.youtube.com/watch?v=BA5oAzJL3zM
-
+#Part2 (additional ai features not yet deployed)
+https://youtu.be/pGDqsWdbu0I
