@@ -6,10 +6,7 @@ export default function AllApplication({jobs,onSave,onApply,emptyMessage}:{jobs:
   onApply: (jobId: number) => void
   onSave: (jobId: number) => void
   emptyMessage: string}){
-function print(){
-    console.log(jobs,"Mad");
-    return <></>
-}
+
 if (jobs.length === 0) {
     return (
       <div className="text-center py-12">
@@ -25,7 +22,7 @@ if (jobs.length === 0) {
       jobs.map((job:any) => (
         
         <Card key={job.id} className="hover:shadow-md transition-shadow">
-          {print()}
+          
           <CardHeader>
             
             <div className="flex justify-between items-start">
@@ -64,13 +61,7 @@ if (jobs.length === 0) {
                 <span className="text-muted-foreground">• {job.job.deadline}</span>
               </div>
 
-              {/* <div className="flex flex-wrap gap-2">
-                {job.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div> */}
+            
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">

@@ -80,6 +80,7 @@ public class ResumeService {
     }
     private void vectorStore(String text,Long id){
         List<Float> floatVector = new ArrayList<>();
+        log.info("{}", embeddingService.embed(text));
        List<Float> embeddingList= embeddingService.embed(text).get(0);
         for (Number d : embeddingList) {
             floatVector.add(d.floatValue());
@@ -115,7 +116,7 @@ public class ResumeService {
                                 Points.SearchPoints.newBuilder()
                                         .setCollectionName(name)
                                         .addAllVector(floatVector)
-                                        .setLimit(5)
+                                        .setLimit(3)
                                         .build()).get();
 
 
@@ -126,6 +127,7 @@ public class ResumeService {
         return jobApplicationsRepository.getApplications(ids);
     }
     public List<JobDetails>queryJobs(String text) throws ExecutionException, InterruptedException {
+        log.info("{}",embeddingService.embed(text));
         List<Float> embeddingList= embeddingService.embed(text).get(0);
         List<Float> floatVector = new ArrayList<>();
         for (Number d : embeddingList) {
@@ -137,7 +139,7 @@ public class ResumeService {
                                 Points.SearchPoints.newBuilder()
                                         .setCollectionName("{test}")
                                         .addAllVector(floatVector)
-                                        .setLimit(5)
+                                        .setLimit(2)
                                         .build()).get();
 
         List<Long> ids = points.stream()
@@ -148,7 +150,7 @@ public class ResumeService {
     }
 
     public  void  createVectorStore(String name) throws ExecutionException, InterruptedException {
-        qdrantClient.createCollectionAsync(name, Collections.VectorParams.newBuilder().setDistance(Collections.Distance.Dot).setSize(768).build()).get();
+        qdrantClient.createCollectionAsync(name, Collections.VectorParams.newBuilder().setDistance(Collections.Distance.Cosine).setSize(768).build()).get();
     }
 
 }

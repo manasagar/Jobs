@@ -17,7 +17,7 @@ public class QueryRewriteService {
     public String rewriteQuery(String query) {
         String prompt = """
             Rewrite this tech/job search query to include relevant technologies,
-            frameworks, and tools.
+            frameworks, and tools.Keep it within 100 words
 
             Query: "%s"
             """.formatted(query);

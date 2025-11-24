@@ -19,6 +19,7 @@ import {
 
 } from "@/components/ui/card"
 
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 import {
@@ -39,11 +40,13 @@ export default function AImode(props:any) {
     
   const [query, setQuery] = useState("")
   const [searchResults, setSearchResults] = useState<any>([])
-
+const [isDataLoading, setIsDataLoading] = useState(false);
 
   const handleSearch =async (searchQuery: string) => {
     setQuery(searchQuery)
+    setIsDataLoading(true);
     const  jobly= await aiQuery(props.jobId,searchQuery);
+    setIsDataLoading(false);
 
    setSearchResults(jobly);
   }
@@ -56,8 +59,9 @@ export default function AImode(props:any) {
      
          
 
-          {/* Search Box */}
+         
           <JobSearchBox onSearch={handleSearch} />
+           {isDataLoading?<DataLoader/>:<br/>}
                          { searchResults !== null&&searchResults.map((app:any)=>(
             <>
              <Card className="hover:shadow-md transition-shadow">
@@ -78,10 +82,7 @@ export default function AImode(props:any) {
               {app.jobseeker.email}
             </a>
           </div>
-          <div >
-             <h4 className="text-sm font-medium mb-2">resume score</h4>
-            {app.score.toFixed(2)}
-          </div>
+         
 
 
         </div>
