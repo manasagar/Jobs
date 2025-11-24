@@ -35,10 +35,12 @@ public class UserController {
     ResumeService resumeService;
     @Autowired
     EmbeddingService embeddingService;
+
     @GetMapping("/welcome")
     public String welcome()  {
         userService.tr();
-        return "Welcome this endpoint is not secure";
+        return "How are you doing creator";
+      //  return queryRewriteService.rewriteQuery("I need an app developer");
     }
 //    @PostMapping(path = "/resume",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<?> uploadResume(@RequestParam("resume") MultipartFile resume) throws Exception {
@@ -47,7 +49,7 @@ public class UserController {
 //    }
 //    @PostMapping(path = "/embeddings",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<?> uploadResume(@RequestBody String text) throws Exception {
-//        return ResponseEntity.ok(resumeService.query(text));
+//        return ResponseEntity.ok(queryRewriteService.rewriteQuery("I need an app developer"));
 //    }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)

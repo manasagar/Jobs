@@ -2,6 +2,7 @@ package com.Job.restservices.controller;
 
 import com.Job.restservices.entity.*;
 import com.Job.restservices.service.MeetingService;
+import com.Job.restservices.service.QueryRewriteService;
 import com.Job.restservices.service.RecruiterService;
 import com.Job.restservices.service.ResumeService;
 import jakarta.mail.MessagingException;
@@ -30,6 +31,8 @@ public class RecruiterController {
     RecruiterService recruiterService;
     @Autowired
     MeetingService meetingService;
+    @Autowired
+    QueryRewriteService queryRewriteService;
     @GetMapping(path="/self",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> self(Principal principal){
         return ResponseEntity.ok(recruiterService.getSelf(principal));
@@ -82,6 +85,8 @@ public class RecruiterController {
     @PostMapping(path = "/query",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getApplications(@RequestBody String text,@RequestParam int jobId) throws Exception {
         log.info("jobId {}",jobId);
+        if(text.length()<40)
+            text=queryRewriteService.rewriteQuery(text);
         return ResponseEntity.ok(resumeService.queryApplications(text, String.valueOf(jobId)));
     }
     @GetMapping(path="/get_applications/{jobId}",produces = MediaType.APPLICATION_JSON_VALUE)

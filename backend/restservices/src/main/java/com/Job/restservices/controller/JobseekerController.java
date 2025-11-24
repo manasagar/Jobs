@@ -5,6 +5,7 @@ import com.Job.restservices.entity.JobDetails;
 import com.Job.restservices.entity.Jobseeker;
 import com.Job.restservices.entity.User;
 import com.Job.restservices.service.JobseekerService;
+import com.Job.restservices.service.QueryRewriteService;
 import com.Job.restservices.service.ResumeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,8 @@ public class JobseekerController {
     JobseekerService jobseekerService;
     @Autowired
     ResumeService resumeService;
+    @Autowired
+    QueryRewriteService queryRewriteService;
     @GetMapping(path="/self",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> self(Principal principal){
         return ResponseEntity.ok(jobseekerService.getSelf(principal));
@@ -90,6 +93,8 @@ public class JobseekerController {
     }
     @PostMapping(path="/query",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<JobDetails> getJobs(@RequestBody String text) throws ExecutionException, InterruptedException {
+        if(text.length()<40)
+            text=queryRewriteService.rewriteQuery(text);
         return resumeService.queryJobs(text);
     }
     @GetMapping(path="/appliedJobs",produces = MediaType.APPLICATION_JSON_VALUE)
